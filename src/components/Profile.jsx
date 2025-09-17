@@ -9,7 +9,7 @@ const Profile = ({ userProfile, onProfileUpdate, onBack }) => {
     bio: userProfile?.bio || '',
     nativeLanguage: userProfile?.nativeLanguages?.[0] || 'English',
     targetLanguage: userProfile?.targetLanguage || 'Japanese',
-    learningLevel: userProfile?.level || 'level 5',
+    learningLevel: userProfile?.level || '5',
     location: userProfile?.location || '',
     website: userProfile?.website || '',
     // Privacy settings
@@ -25,6 +25,9 @@ const Profile = ({ userProfile, onProfileUpdate, onBack }) => {
 
   const [activeTab, setActiveTab] = useState('general');
   const [isLoading, setIsLoading] = useState(false);
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
+  const [showSavedPosts, setShowSavedPosts] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -208,6 +211,34 @@ const Profile = ({ userProfile, onProfileUpdate, onBack }) => {
                     />
                   </div>
                 </div>
+
+                {/* Social Management */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium text-gray-900">Social</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button 
+                      onClick={() => setShowFollowers(true)}
+                      className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Manage Followers
+                    </button>
+                    <button 
+                      onClick={() => setShowFollowing(true)}
+                      className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Manage Following
+                    </button>
+                  </div>
+                  <button 
+                    onClick={() => setShowSavedPosts(true)}
+                    className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Saved Posts
+                  </button>
+                </div>
               </div>
             )}
 
@@ -261,10 +292,16 @@ const Profile = ({ userProfile, onProfileUpdate, onBack }) => {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
-                    <option value="level 1">level 1</option>
-                    <option value="level 5">level 5</option>
-                    <option value="level 10">level 10</option>
-                    <option value="native">Native</option>
+                    <option value="1">Level 1</option>
+                    <option value="2">Level 2</option>
+                    <option value="3">Level 3</option>
+                    <option value="4">Level 4</option>
+                    <option value="5">Level 5</option>
+                    <option value="6">Level 6</option>
+                    <option value="7">Level 7</option>
+                    <option value="8">Level 8</option>
+                    <option value="9">Level 9</option>
+                    <option value="10">Level 10</option>
                   </select>
                 </div>
               </div>
@@ -397,6 +434,88 @@ const Profile = ({ userProfile, onProfileUpdate, onBack }) => {
           </div>
         </div>
       </div>
+
+      {/* Followers Modal */}
+      {showFollowers && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowFollowers(false)}>
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold mb-4">Manage Followers</h3>
+            <div className="space-y-3">
+              {['Yuki Tanaka', 'Sarah Johnson', 'Li Wei'].map((follower, index) => (
+                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <span>{follower}</span>
+                  <div className="space-x-2">
+                    <button className="text-red-500 text-sm">Remove</button>
+                    <button className="text-gray-500 text-sm">Block</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button 
+              onClick={() => setShowFollowers(false)}
+              className="mt-4 w-full bg-orange-500 text-white py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Following Modal */}
+      {showFollowing && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowFollowing(false)}>
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold mb-4">Manage Following</h3>
+            <div className="space-y-3">
+              {['Hiroshi Sato', 'Hanako Yamada', 'Taro Suzuki'].map((following, index) => (
+                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <span>{following}</span>
+                  <button className="text-red-500 text-sm">Unfollow</button>
+                </div>
+              ))}
+            </div>
+            <button 
+              onClick={() => setShowFollowing(false)}
+              className="mt-4 w-full bg-orange-500 text-white py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Saved Posts Modal */}
+      {showSavedPosts && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowSavedPosts(false)}>
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold mb-4">Saved Posts</h3>
+            <div className="space-y-4">
+              <div className="border rounded-lg p-4">
+                <h4 className="font-medium">地元の人だけが知る hidden ラーメン店</h4>
+                <p className="text-sm text-gray-600 mt-1">東京の最も busy な地区で地下の food culture を探索...</p>
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-xs text-gray-500">by 田中雪</span>
+                  <button className="text-red-500 text-sm">Remove</button>
+                </div>
+              </div>
+              <div className="border rounded-lg p-4">
+                <h4 className="font-medium">Tokyo の新しい digital art museum が一般公開</h4>
+                <p className="text-sm text-gray-600 mt-1">Interactive な digital art 展示は、traditional な日本の美学...</p>
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-xs text-gray-500">by 佐藤博</span>
+                  <button className="text-red-500 text-sm">Remove</button>
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowSavedPosts(false)}
+              className="mt-4 w-full bg-orange-500 text-white py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

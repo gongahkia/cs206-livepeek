@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share, Send, BookOpen, Sparkles } from 'lucide-react';
+import { Bookmark, MessageCircle, Share, Send, BookOpen, Sparkles } from 'lucide-react';
 import EnhancedCommentSystem from './EnhancedCommentSystem';
 
 const NewsFeed = ({ selectedCountry, userProfile }) => {
   const [showComments, setShowComments] = useState({});
   const [selectedWord, setSelectedWord] = useState(null);
 
-  // Enhanced Japanese posts with mixed Japanese/English content for level 5 learners
+  // Enhanced Japanese posts with mixed Japanese/English content for intermediate learners
   const japaneseArticles = [
     {
       id: 1,
@@ -23,7 +23,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 156,
       shares: 89,
       source: "twitter",
-      originalSource: "Twitter"
+      originalSource: "Twitter",
+      externalUrl: "https://twitter.com/yukitanaka/status/123456789",
+      difficulty: 6
     },
     {
       id: 2,
@@ -40,7 +42,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 89,
       shares: 234,
       source: "reddit",
-      originalSource: "Reddit"
+      originalSource: "Reddit",
+      externalUrl: "https://reddit.com/r/japan/comments/digital_art_museum",
+      difficulty: 7
     },
     {
       id: 3,
@@ -57,7 +61,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 45,
       shares: 67,
       source: "instagram",
-      originalSource: "Instagram"
+      originalSource: "Instagram",
+      externalUrl: "https://instagram.com/p/harajuku_fashion_2024",
+      difficulty: 5
     },
     {
       id: 4,
@@ -74,7 +80,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 78,
       shares: 156,
       source: "line",
-      originalSource: "LINE"
+      originalSource: "LINE",
+      externalUrl: "https://line.me/R/msg/text/?sakura_economics_2024",
+      difficulty: 8
     },
     {
       id: 5,
@@ -91,7 +99,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 134,
       shares: 298,
       source: "tiktok",
-      originalSource: "TikTok"
+      originalSource: "TikTok",
+      externalUrl: "https://tiktok.com/@misaki_tea/video/123456789",
+      difficulty: 4
     },
     {
       id: 6,
@@ -108,7 +118,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 187,
       shares: 145,
       source: "facebook",
-      originalSource: "Facebook"
+      originalSource: "Facebook",
+      externalUrl: "https://facebook.com/osaka.streetfood/posts/123456789",
+      difficulty: 6
     },
     {
       id: 7,
@@ -125,7 +137,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 92,
       shares: 76,
       source: "reddit",
-      originalSource: "Reddit"
+      originalSource: "Reddit",
+      externalUrl: "https://reddit.com/r/japanlife/comments/remote_work_culture",
+      difficulty: 7
     },
     {
       id: 8,
@@ -142,9 +156,32 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       comments: 118,
       shares: 203,
       source: "instagram",
-      originalSource: "Instagram"
+      originalSource: "Instagram",
+      externalUrl: "https://instagram.com/p/kyushu_hidden_gems_2024",
+      difficulty: 5
     }
   ];
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query.trim()) {
+      setIsSearching(true);
+      // Simulate search delay
+      setTimeout(() => {
+        // Return random posts from existing set
+        const shuffled = [...japaneseArticles].sort(() => 0.5 - Math.random());
+        setSearchResults(shuffled.slice(0, 3));
+        setIsSearching(false);
+      }, 1500);
+    } else {
+      setSearchResults([]);
+      setIsSearching(false);
+    }
+  };
 
   const renderSourceBadge = (source) => {
     const sourceConfig = {
@@ -290,6 +327,24 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
           </div>
           <div className="text-4xl">🇯🇵</div>
         </div>
+        
+        {/* Search Bar */}
+        <div className="mt-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search posts..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            />
+            {isSearching && (
+              <div className="absolute right-3 top-2.5">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500"></div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Word Translation Popup */}
@@ -321,8 +376,8 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
         </div>
       )}
 
-      {/* Articles */}
-      {japaneseArticles.map((article) => (
+      {/* Posts */}
+      {(searchResults.length > 0 ? searchResults : japaneseArticles).map((article) => (
         <div key={article.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {/* Article Header */}
           <div className="p-6 pb-4">
@@ -348,7 +403,20 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                {renderSourceBadge(article.source)}
+                <a 
+                  href={article.externalUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  title="See original post"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+                <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium">
+                  Level {article.difficulty}
+                </span>
               </div>
             </div>
 
@@ -385,9 +453,9 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
             {/* Engagement Buttons */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
               <div className="flex items-center space-x-6">
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors">
-                  <Heart className="w-5 h-5" />
-                  <span className="text-sm font-medium">{article.likes.toLocaleString()} likes</span>
+                <button className="flex items-center space-x-2 text-gray-600 hover:text-orange-500 transition-colors">
+                  <Bookmark className="w-5 h-5" />
+                  <span className="text-sm font-medium">Save</span>
                 </button>
                 <button 
                   onClick={() => toggleComments(article.id)}
