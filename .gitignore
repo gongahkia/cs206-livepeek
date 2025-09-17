@@ -1,6 +1,2 @@
 node_modules
-venv
-myenv
-.env
-.env.local
 .DS_Store
