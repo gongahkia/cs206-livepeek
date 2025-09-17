@@ -6,7 +6,7 @@ const Onboarding = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [nativeLanguages, setNativeLanguages] = useState([]);
   const [targetLanguage, setTargetLanguage] = useState('');
-  const [translationLevel, setTranslationLevel] = useState(0);
+  const [translationLevel, setTranslationLevel] = useState(1);
 
   // Sample Japanese post for the demo
   const originalPost = {
@@ -46,7 +46,7 @@ const Onboarding = ({ onComplete }) => {
 
     let result = "";
     words.forEach((word, index) => {
-      const threshold = (index + 1) / words.length;
+      const threshold = (index + 1) / words.length * 10; // Convert to 1-10 scale
       if (level >= threshold) {
         result += word.en + " ";
       } else {
@@ -64,7 +64,7 @@ const Onboarding = ({ onComplete }) => {
       onComplete({
         nativeLanguages,
         targetLanguage,
-        level: 'level 5'
+        level: 'intermediate'
       });
     }
   };
@@ -196,17 +196,17 @@ const Onboarding = ({ onComplete }) => {
                 </div>
                 <div>
                   <div className="font-medium text-gray-900">
-                    {translationLevel > 0.8 ? translatedPost.author : originalPost.author}
+                    {translationLevel > 8 ? translatedPost.author : originalPost.author}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {translationLevel > 0.8 ? translatedPost.location : originalPost.location} • {translationLevel > 0.8 ? translatedPost.time : originalPost.time}
+                    {translationLevel > 8 ? translatedPost.location : originalPost.location} • {translationLevel > 8 ? translatedPost.time : originalPost.time}
                   </div>
                 </div>
               </div>
               
               <p className="text-gray-800 mb-4 leading-relaxed">
-                {translationLevel === 0 ? originalPost.content : 
-                 translationLevel === 1 ? translatedPost.content :
+                {translationLevel === 1 ? originalPost.content : 
+                 translationLevel === 10 ? translatedPost.content :
                  getInterpolatedContent(translationLevel)}
               </p>
               
@@ -220,21 +220,21 @@ const Onboarding = ({ onComplete }) => {
             {/* Translation Slider */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Japanese</span>
-                <span className="text-sm text-gray-600">English</span>
+                <span className="text-sm text-gray-600">Level 1 (Japanese)</span>
+                <span className="text-sm text-gray-600">Level 10 (English)</span>
               </div>
               <input
                 type="range"
-                min="0"
-                max="1"
-                step="0.1"
+                min="1"
+                max="10"
+                step="1"
                 value={translationLevel}
-                onChange={(e) => setTranslationLevel(parseFloat(e.target.value))}
+                onChange={(e) => setTranslationLevel(parseInt(e.target.value))}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="text-center mt-2">
                 <span className="text-sm text-gray-500">
-                  Translation: {Math.round(translationLevel * 100)}%
+                  Current Level: {translationLevel}
                 </span>
               </div>
             </div>
@@ -259,7 +259,7 @@ const Onboarding = ({ onComplete }) => {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 text-left">
               <h3 className="font-semibold text-blue-900 mb-3">Important Notice</h3>
               <ul className="space-y-2 text-blue-800 text-sm">
-                <li>• LivePeek is designed for <strong>level 5 to level 10</strong> language learners</li>
+                <li>• LivePeek is designed for <strong>intermediate to advanced</strong> language learners</li>
                 <li>• We expect you to have a <strong>basic understanding</strong> of your target language</li>
                 <li>• For Japanese: You should be comfortable with hiragana and katakana</li>
                 <li>• Our content includes authentic, real-world conversations</li>

@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Languages, BookOpen, Sparkles, Send } from 'lucide-react';
+import { Heart, MessageCircle, Languages, BookOpen, Sparkles, Send, Check } from 'lucide-react';
 
 const EnhancedCommentSystem = ({ articleId, userProfile }) => {
   const [showDictionary, setShowDictionary] = useState(false);
   const [showAIHelp, setShowAIHelp] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [selectedWord, setSelectedWord] = useState(null);
+  const [showTranslation, setShowTranslation] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState('');
+  const [comments, setComments] = useState([]);
 
-  // Mock comments with mixed Japanese/English for level 5 learners
+  // Mock comments with mixed Japanese/English for intermediate learners
   const mockComments = {
     1: [
       {
         id: 1,
         user: "Li Wei",
-        badge: "Chinese Learner",
-        level: "level 10",
+        level: "7",
         location: "Beijing, China",
         time: "20m ago",
         content: "この place は really authentic です！I've been learning about Japanese food culture と this looks amazing. Can't wait to visit Tokyo someday!",
@@ -24,8 +26,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "Sarah Johnson",
-        badge: "Japanese Learner", 
-        level: "level 1",
+        
         location: "New York, USA",
         time: "15m ago",
         content: "ラーメン looks so delicious! I'm still learning hiragana but I love seeing authentic Japanese content. Thank you for sharing!",
@@ -35,8 +36,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "田中健",
-        badge: "Native Speaker",
-        level: "Native",
+        level: "10",
         location: "大阪、Japan",
         time: "10m ago",
         content: "Great post! These hidden gems are what make Tokyo special. For learners: 'hidden' means 隠れた and 'authentic' means 本格的な。",
@@ -46,8 +46,6 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Maria Garcia",
-        badge: "Spanish Learner",
-        level: "level 5",
         location: "Madrid, Spain",
         time: "8m ago",
         content: "As someone learning Japanese, I appreciate the mixed language approach! The ramen culture in Japan is so fascinating compared to Spain.",
@@ -57,8 +55,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "김민수",
-        badge: "Korean Learner",
-        level: "level 10",
+        level: "8",
         location: "Seoul, Korea",
         time: "5m ago",
         content: "Japanese と Korean の food culture には many similarities があります。This type of family business は both countries で important です。",
@@ -68,8 +65,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "Alex Thompson",
-        badge: "Japanese Learner",
-        level: "level 5",
+        
         location: "London, UK",
         time: "3m ago",
         content: "I visited one of these places last month! The おじいさん who ran it was so kind and patient with my broken Japanese. Unforgettable experience!",
@@ -79,8 +75,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "山田花",
-        badge: "Native Speaker",
-        level: "Native",
+        level: "10",
         location: "東京、Japan",
         time: "2m ago",
         content: "These places are treasures! Many have been in families for generations. The recipes are passed down and never written down - pure tradition!",
@@ -90,8 +85,6 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Pierre Dubois",
-        badge: "French Learner",
-        level: "level 1",
         location: "Paris, France",
         time: "1m ago",
         content: "Je suis débutant in Japanese but this makes me want to learn more! The food culture looks incredible. Merci for sharing!",
@@ -101,8 +94,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Chen Wei",
-        badge: "Chinese Learner",
-        level: "level 10",
+        level: "9",
         location: "Shanghai, China",
         time: "30s ago",
         content: "中国にも similar family restaurants があります。But Japanese ラーメン culture is unique! Planning a food tour to Tokyo next year.",
@@ -112,8 +104,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Emma Wilson",
-        badge: "Japanese Learner",
-        level: "level 5",
+        level: "6",
         location: "Sydney, Australia",
         time: "just now",
         content: "This is why I love LivePeek! Learning about culture through food is the best way. Can anyone recommend similar places in Osaka?",
@@ -125,8 +116,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "Emma Wilson",
-        badge: "Japanese Learner",
-        level: "level 5", 
+        
+        level: "6", 
         location: "London, UK",
         time: "30m ago",
         content: "Digital art museums in Japan are incredible! The technology と traditional art の combination is fascinating. I visited one in Odaiba last year.",
@@ -136,8 +127,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "山田太郎",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "東京、Japan", 
         time: "25m ago",
         content: "This museum is perfect for language learners! They have English explanations alongside Japanese. Great for practicing reading skills!",
@@ -147,8 +138,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "Carlos Silva",
-        badge: "Portuguese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "São Paulo, Brazil",
         time: "20m ago",
         content: "Technology と art の fusion は本当に beautiful です！Brazil also has some digital art spaces but nothing like this scale.",
@@ -158,8 +149,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Anna Kowalski",
-        badge: "Polish Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Warsaw, Poland",
         time: "18m ago",
         content: "I'm still learning basic Japanese but this looks amazing! The interactive elements must make it so engaging for visitors.",
@@ -169,8 +160,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "田中美咲",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "京都、Japan",
         time: "15m ago",
         content: "Traditional Japanese aesthetics combined with modern technology creates such a unique experience. Proud of our cultural innovation!",
@@ -180,8 +171,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "David Kim",
-        badge: "Korean Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Los Angeles, USA",
         time: "12m ago",
         content: "As an artist myself, I'm fascinated by how Japan blends tradition with innovation. This museum represents that perfectly!",
@@ -191,8 +182,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "Sophie Martin",
-        badge: "French Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Lyon, France",
         time: "10m ago",
         content: "The immersive experience must be incredible! French museums are starting to adopt similar technology. Japan is always ahead!",
@@ -202,8 +193,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "李小明",
-        badge: "Chinese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Beijing, China",
         time: "8m ago",
         content: "Digital art は future of museums だと思います。This type of cultural experience helps language learners understand Japan better.",
@@ -213,8 +204,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Roberto Rossi",
-        badge: "Italian Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Rome, Italy",
         time: "5m ago",
         content: "Italy has amazing traditional art, but this digital approach is revolutionary! Would love to experience this in person someday.",
@@ -224,8 +215,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Jessica Brown",
-        badge: "Japanese Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Toronto, Canada",
         time: "2m ago",
         content: "This makes me even more excited to learn Japanese! The culture is so rich and innovative. Adding this to my Tokyo bucket list!",
@@ -237,8 +228,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "Alex Kim",
-        badge: "Korean Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Seoul, Korea",
         time: "45m ago",
         content: "Harajuku fashion is so unique! As someone learning Japanese, I love how creative expression transcends language barriers. Fashion は universal language ですね！",
@@ -248,8 +239,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "Isabella Rodriguez",
-        badge: "Spanish Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Barcelona, Spain",
         time: "40m ago",
         content: "The creativity in Harajuku is inspiring! Spanish fashion is more traditional, but I love how Japanese youth express themselves so freely.",
@@ -259,8 +250,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "佐藤ゆき",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "原宿、Tokyo",
         time: "35m ago",
         content: "Harajuku represents the spirit of Japanese youth! We're not afraid to mix traditional elements with modern trends. Fashion is our voice!",
@@ -270,8 +261,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Thomas Mueller",
-        badge: "German Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Berlin, Germany",
         time: "30m ago",
         content: "German fashion is quite conservative compared to this! I admire how Japanese young people aren't afraid to stand out.",
@@ -281,8 +272,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "Priya Sharma",
-        badge: "Hindi Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Mumbai, India",
         time: "25m ago",
         content: "Indian fashion also mixes traditional と modern elements! But Harajuku takes it to a completely different level. So creative!",
@@ -292,8 +283,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "Lucas Santos",
-        badge: "Portuguese Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Rio de Janeiro, Brazil",
         time: "20m ago",
         content: "Brazilian fashion is colorful but this is next level! The way young Japanese people express individuality through fashion is amazing.",
@@ -303,8 +294,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "中村あい",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "渋谷、Tokyo",
         time: "15m ago",
         content: "Fashion in Harajuku changes every season! It's like a living art gallery where everyone is both artist and artwork.",
@@ -314,8 +305,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Olivia Taylor",
-        badge: "Japanese Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Melbourne, Australia",
         time: "12m ago",
         content: "I visited Harajuku last month and was amazed! Everyone was so kind when I tried to compliment their outfits in broken Japanese.",
@@ -325,8 +316,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Ahmed Hassan",
-        badge: "Arabic Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Cairo, Egypt",
         time: "8m ago",
         content: "Fashion as self-expression is universal! But Japanese youth culture takes it to artistic levels. Very inspiring for creative people.",
@@ -336,8 +327,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Marie Dubois",
-        badge: "French Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Paris, France",
         time: "3m ago",
         content: "Even Paris fashion week doesn't have this level of creativity! Japanese street fashion is truly an art form.",
@@ -349,8 +340,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "Maria Garcia",
-        badge: "Spanish Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Madrid, Spain", 
         time: "1h ago",
         content: "Cherry blossom season must be amazing for the economy! I'm planning to visit during sakura season. Any recommendations for best viewing spots?",
@@ -360,8 +351,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "鈴木健太",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "東京、Japan",
         time: "55m ago",
         content: "Sakura season brings millions of tourists! Ueno Park and Shinjuku Gyoen are popular, but try Chidorigafuchi for fewer crowds.",
@@ -371,8 +362,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "James Wilson",
-        badge: "Japanese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Chicago, USA",
         time: "50m ago",
         content: "The economic impact is huge! Hotels, restaurants, everything gets booked months in advance. Tourism と economy の perfect example です。",
@@ -382,8 +373,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Lin Zhang",
-        badge: "Chinese Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Shanghai, China",
         time: "45m ago",
         content: "中国也有樱花，but Japan's sakura culture is unique! The hanami tradition makes it more than just flowers - it's a cultural event.",
@@ -393,8 +384,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "Elena Petrov",
-        badge: "Russian Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Moscow, Russia",
         time: "40m ago",
         content: "Russian spring is still cold when Japan has sakura! The timing must be perfect for tourism. Very smart seasonal marketing.",
@@ -404,8 +395,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "高橋さくら",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "京都、Japan",
         time: "35m ago",
         content: "Kyoto during sakura season is magical but very crowded! Local businesses prepare special sakura-themed products months ahead.",
@@ -415,8 +406,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "Marco Rossi",
-        badge: "Italian Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Milan, Italy",
         time: "30m ago",
         content: "Italy has beautiful springs too, but sakura season in Japan is legendary! The limited time makes it even more special and valuable.",
@@ -426,8 +417,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Sophie Chen",
-        badge: "Japanese Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Vancouver, Canada",
         time: "25m ago",
         content: "Vancouver has cherry blossoms too but Japan's hanami culture is deeper! It's not just viewing - it's celebrating life and renewal.",
@@ -437,8 +428,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Daniel Lee",
-        badge: "Korean Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Busan, Korea",
         time: "20m ago",
         content: "Korea also has cherry blossoms but Japan's tourism marketing is incredible! They've turned natural beauty into economic opportunity.",
@@ -448,8 +439,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Fatima Al-Zahra",
-        badge: "Arabic Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Dubai, UAE",
         time: "15m ago",
         content: "Desert countries like UAE don't have seasons like this! The concept of seasonal tourism based on flowers is fascinating.",
@@ -461,8 +452,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "Emma Thompson",
-        badge: "Japanese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "London, UK",
         time: "2h ago",
         content: "Tea ceremony と modern life の combination is brilliant! Traditional culture doesn't have to be separate from contemporary living.",
@@ -472,8 +463,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "田中和子",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "京都、Japan",
         time: "1h 50m ago",
         content: "As a tea ceremony instructor, I love seeing young people embrace tradition! Instagram sharing actually helps preserve our culture.",
@@ -483,8 +474,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "Carlos Mendez",
-        badge: "Spanish Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Mexico City, Mexico",
         time: "1h 45m ago",
         content: "Mexican culture also blends traditional と modern! But Japanese approach to preserving ceremony while adapting is inspiring.",
@@ -494,8 +485,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Lisa Park",
-        badge: "Korean Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Seoul, Korea",
         time: "1h 40m ago",
         content: "Korean tea culture exists too but Japan's ceremony is more formalized! The mindfulness aspect is what young people need today.",
@@ -505,8 +496,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "Ahmed Ali",
-        badge: "Arabic Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Cairo, Egypt",
         time: "1h 35m ago",
         content: "Middle Eastern tea culture is different but equally important! Seeing how Japan modernizes tradition while keeping essence is amazing.",
@@ -516,8 +507,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "小林美香",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "東京、Japan",
         time: "1h 30m ago",
         content: "My grandmother taught me tea ceremony, now I share it on TikTok! Traditional arts need modern platforms to survive and thrive.",
@@ -527,8 +518,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "Pierre Laurent",
-        badge: "French Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Lyon, France",
         time: "1h 25m ago",
         content: "French café culture is casual, but Japanese tea ceremony has such depth! The meditation aspect appeals to stressed modern life.",
@@ -538,8 +529,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Raj Patel",
-        badge: "Hindi Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Mumbai, India",
         time: "1h 20m ago",
         content: "Indian chai culture is everywhere, but Japanese ceremony teaches patience and mindfulness! Both cultures value tea differently.",
@@ -549,8 +540,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Anna Kowalski",
-        badge: "Polish Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Krakow, Poland",
         time: "1h 15m ago",
         content: "Polish tea traditions are simple compared to this! The artistic and spiritual elements of Japanese ceremony are fascinating.",
@@ -560,8 +551,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Michael Brown",
-        badge: "Japanese Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Sydney, Australia",
         time: "1h 10m ago",
         content: "Tried tea ceremony in Kyoto last year! The Instagram generation is actually helping preserve these traditions in new ways.",
@@ -573,8 +564,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "Roberto Silva",
-        badge: "Portuguese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "São Paulo, Brazil",
         time: "1d ago",
         content: "Osaka street food is legendary! Brazilian street food is amazing too, but Japanese fusion creativity is next level. Want to try that Korean-Japanese combo!",
@@ -584,8 +575,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "中村太郎",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "大阪、Japan",
         time: "23h ago",
         content: "Osaka is Japan's kitchen! We're always experimenting with new flavors while keeping traditional takoyaki and okonomiyaki perfect.",
@@ -595,8 +586,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "Kim Min-jun",
-        badge: "Korean Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Seoul, Korea",
         time: "22h ago",
         content: "Korean-Japanese fusion food is popular in Seoul too! The combination of Korean spices with Japanese techniques creates amazing flavors.",
@@ -606,8 +597,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Isabella Romano",
-        badge: "Italian Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Naples, Italy",
         time: "21h ago",
         content: "Italian-Japanese fusion sounds incredible! Naples has amazing street food too, but Osaka's creativity with international flavors is inspiring.",
@@ -617,8 +608,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "Chen Wei",
-        badge: "Chinese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Guangzhou, China",
         time: "20h ago",
         content: "Chinese street food culture is huge, but Japanese attention to detail even in street food is remarkable! Quality と creativity の perfect balance.",
@@ -628,8 +619,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "田中さくら",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "大阪、Japan",
         time: "19h ago",
         content: "Dotonbori area has the best fusion experiments! Young chefs are creating new traditions while respecting old ones. Food evolution!",
@@ -639,8 +630,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "Miguel Rodriguez",
-        badge: "Spanish Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Madrid, Spain",
         time: "18h ago",
         content: "Spanish tapas culture is different but I love how Osaka embraces international influences! Food brings cultures together.",
@@ -650,8 +641,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Sarah Johnson",
-        badge: "Japanese Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Portland, USA",
         time: "17h ago",
         content: "Portland has great food trucks but Osaka's street food scene is legendary! The fusion approach shows how food culture evolves.",
@@ -661,8 +652,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Hans Mueller",
-        badge: "German Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Munich, Germany",
         time: "16h ago",
         content: "German street food is traditional sausages, but this fusion concept is revolutionary! Innovation while respecting tradition.",
@@ -672,8 +663,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Priya Sharma",
-        badge: "Hindi Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Delhi, India",
         time: "15h ago",
         content: "Indian street food has fusion too, but Japanese precision in preparation is amazing! Would love to try these Osaka innovations.",
@@ -685,8 +676,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "David Chen",
-        badge: "Chinese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "San Francisco, USA",
         time: "2d ago",
         content: "Work from home culture in Japan changing is huge news! Silicon Valley went remote first, but seeing traditional Japanese companies adapt is impressive.",
@@ -696,8 +687,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "小林健太",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "横浜、Japan",
         time: "2d ago",
         content: "Remote work was unthinkable before pandemic! Now even traditional companies are embracing flexibility. Big cultural shift for Japan.",
@@ -707,8 +698,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "Emma Wilson",
-        badge: "Japanese Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "London, UK",
         time: "2d ago",
         content: "UK went remote quickly, but Japan's transformation is more significant! The traditional office culture was so deeply rooted there.",
@@ -718,8 +709,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Lars Andersen",
-        badge: "Danish Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Copenhagen, Denmark",
         time: "2d ago",
         content: "Scandinavian work-life balance was already good, but Japan's change from overwork culture to remote flexibility is revolutionary!",
@@ -729,8 +720,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "Maria Santos",
-        badge: "Portuguese Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Lisbon, Portugal",
         time: "1d 23h ago",
         content: "Portuguese companies also adapted to remote work, but Japanese transformation shows how global events can change deep cultural practices.",
@@ -740,8 +731,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "田中美咲",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "東京、Japan",
         time: "1d 22h ago",
         content: "As a working mother, remote work has been life-changing! Better work-life balance is finally possible in Japanese corporate culture.",
@@ -751,8 +742,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "Alex Thompson",
-        badge: "Japanese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Toronto, Canada",
         time: "1d 21h ago",
         content: "Canadian remote work culture is established, but watching Japan adapt shows how flexible human societies can be when necessary.",
@@ -762,8 +753,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Sophie Martin",
-        badge: "French Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Paris, France",
         time: "1d 20h ago",
         content: "French work culture values long lunches, Japanese valued long hours. Both are finding new balance with remote work flexibility!",
@@ -773,8 +764,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Raj Patel",
-        badge: "Hindi Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Bangalore, India",
         time: "1d 19h ago",
         content: "India's IT sector was remote-ready, but seeing traditional Japanese companies change shows technology's power to transform culture.",
@@ -784,8 +775,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Carlos Rodriguez",
-        badge: "Spanish Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Buenos Aires, Argentina",
         time: "1d 18h ago",
         content: "Latin American work culture is family-focused, so remote work fits well. Japan's adaptation from group-office culture is more dramatic!",
@@ -797,8 +788,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "Lisa Park",
-        badge: "Korean Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Busan, Korea",
         time: "3d ago",
         content: "Kyushu is so beautiful! Korean tourists love visiting, especially Fukuoka. The nature and hot springs are incredible. Hidden gems indeed!",
@@ -808,8 +799,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 2,
         user: "森田健一",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "福岡、Japan",
         time: "3d ago",
         content: "So proud to see Kyushu getting international recognition! We have amazing nature, history, and food that rivals Tokyo and Osaka.",
@@ -819,8 +810,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 3,
         user: "Thomas Schmidt",
-        badge: "German Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Munich, Germany",
         time: "3d ago",
         content: "German tourists usually go to Tokyo/Kyoto, but Kyushu sounds amazing! The combination of nature and history is exactly what we love.",
@@ -830,8 +821,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Chen Li",
-        badge: "Chinese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Taipei, Taiwan",
         time: "2d 23h ago",
         content: "Taiwan and Kyushu have similar subtropical climates! The natural beauty and local communities sound wonderful for cultural exchange.",
@@ -841,8 +832,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 5,
         user: "Isabella Garcia",
-        badge: "Spanish Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "Barcelona, Spain",
         time: "2d 22h ago",
         content: "Spanish tourists love discovering hidden places! Kyushu's combination of nature and culture sounds perfect for authentic travel experiences.",
@@ -852,8 +843,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 6,
         user: "佐藤ゆき",
-        badge: "Native Speaker",
-        level: "Native",
+        
+        level: "10",
         location: "熊本、Japan",
         time: "2d 21h ago",
         content: "Kumamoto Castle and Aso volcano attract many visitors! Local communities are working hard to share our culture with international guests.",
@@ -863,8 +854,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 7,
         user: "James Wilson",
-        badge: "Japanese Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Seattle, USA",
         time: "2d 20h ago",
         content: "Pacific Northwest has great nature too, but Kyushu's volcanic landscapes and hot springs are unique! Adding to my Japan travel list.",
@@ -874,8 +865,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Marie Dubois",
-        badge: "French Learner",
-        level: "level 5",
+        
+        level: "6",
         location: "Nice, France",
         time: "2d 19h ago",
         content: "French Riviera is beautiful, but Kyushu's natural diversity sounds incredible! The local community involvement in tourism is inspiring.",
@@ -885,8 +876,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 9,
         user: "Ahmed Hassan",
-        badge: "Arabic Learner",
-        level: "level 10",
+        
+        level: "8",
         location: "Dubai, UAE",
         time: "2d 18h ago",
         content: "Desert landscapes are beautiful, but Kyushu's green mountains and hot springs offer completely different natural experiences!",
@@ -896,8 +887,8 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 10,
         user: "Anna Petrov",
-        badge: "Russian Learner",
-        level: "level 1",
+        
+        level: "5",
         location: "St. Petersburg, Russia",
         time: "2d 17h ago",
         content: "Russian nature is vast and cold, but Kyushu's warm subtropical environment sounds like paradise! Perfect for winter escapes.",
@@ -907,28 +898,51 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
     ]
   };
 
-  // User's personal dictionary
+  // User's personal dictionary with difficulty levels
   const userDictionary = [
-    { japanese: "ラーメン", reading: "ramen", english: "ramen noodles" },
-    { japanese: "文化", reading: "bunka", english: "culture" },
-    { japanese: "興味深い", reading: "kyōmibukai", english: "interesting" },
-    { japanese: "素晴らしい", reading: "subarashii", english: "wonderful" },
-    { japanese: "美味しい", reading: "oishii", english: "delicious" },
-    { japanese: "本格的", reading: "honkakuteki", english: "authentic" },
-    { japanese: "伝統的", reading: "dentōteki", english: "traditional" },
-    { japanese: "現代的", reading: "gendaiteki", english: "modern" }
+    { japanese: "ラーメン", reading: "ramen", english: "ramen noodles", level: 3 },
+    { japanese: "文化", reading: "bunka", english: "culture", level: 5 },
+    { japanese: "興味深い", reading: "kyōmibukai", english: "interesting", level: 7 },
+    { japanese: "素晴らしい", reading: "subarashii", english: "wonderful", level: 6 },
+    { japanese: "美味しい", reading: "oishii", english: "delicious", level: 2 },
+    { japanese: "本格的", reading: "honkakuteki", english: "authentic", level: 8 },
+    { japanese: "伝統的", reading: "dentōteki", english: "traditional", level: 8 },
+    { japanese: "現代的", reading: "gendaiteki", english: "modern", level: 7 }
   ];
 
-  // AI-powered comment suggestions
+  // AI-powered comment suggestions (Japanese-only as requested)
   const aiSuggestions = [
-    "This looks とても delicious! I want to try it.",
-    "Thank you for sharing this cultural insight!",
-    "As a Japanese learner, this is very helpful.",
-    "The combination of traditional と modern is fascinating.",
-    "I hope to visit Japan someday and experience this!"
+    "これはとても美味しそうですね！",
+    "文化的な洞察をありがとうございます。",
+    "日本語学習者として、これはとても役に立ちます。",
+    "伝統と現代の組み合わせが魅力的です。",
+    "いつか日本を訪れて体験したいです！",
+    "素晴らしい投稿をありがとうございます。",
+    "この場所に行ってみたいです。"
   ];
 
-  const comments = mockComments[articleId] || [];
+  const handlePostComment = () => {
+    if (commentText.trim()) {
+      const newComment = {
+        id: Date.now(),
+        user: userProfile?.name || 'You',
+        badge: 'Japanese Learner',
+        level: `Level ${userProfile?.level || '5'}`,
+        location: userProfile?.location || 'Your Location',
+        time: 'Just now',
+        content: commentText,
+        likes: 0,
+        avatar: userProfile?.name?.charAt(0)?.toUpperCase() || 'Y'
+      };
+      
+      setComments([newComment, ...comments]);
+      setCommentText('');
+      setShowSuccessMessage('Comment posted successfully!');
+      setTimeout(() => setShowSuccessMessage(''), 2000);
+    }
+  };
+
+  const allComments = [...(mockComments[articleId] || []), ...comments];
 
   const handleWordClick = (word) => {
     const dictEntry = userDictionary.find(entry => 
@@ -971,32 +985,69 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
   return (
     <div className="bg-yellow-50 border-t border-yellow-200">
       {/* Word Translation Popup */}
-      {selectedWord && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setSelectedWord(null)}>
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4" onClick={e => e.stopPropagation()}>
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900 mb-1">{selectedWord.japanese}</div>
               <div className="text-sm text-gray-500 mb-2">{selectedWord.reading}</div>
-              <div className="text-lg text-gray-600 mb-4">{selectedWord.english}</div>
-              <button 
-                className="w-full bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600"
-                onClick={() => setSelectedWord(null)}
-              >
-                Got it!
-              </button>
+              <div className="text-lg text-gray-600 mb-2">{selectedWord.english}</div>
+                <div className="mb-4">
+                  <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium">
+                    Level {selectedWord.level}
+                  </span>
+                </div>
+              <div className="space-y-2">
+                <button 
+                  className="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-200"
+                  onClick={() => {
+                    setShowSuccessMessage('Ganbatte! 💪');
+                    setTimeout(() => setShowSuccessMessage(''), 2000);
+                    setSelectedWord(null);
+                  }}
+                >
+                  Got it!
+                </button>
+                <button 
+                  className="w-full bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 flex items-center justify-center"
+                  onClick={() => {
+                    setShowSuccessMessage('Sugoi! 😊');
+                    setTimeout(() => setShowSuccessMessage(''), 2000);
+                    setSelectedWord(null);
+                  }}
+                >
+                  <Check className="w-4 h-4 mr-2" />
+                  Mastered
+                </button>
+                <button 
+                  className="w-full bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600"
+                  onClick={() => {
+                    setShowSuccessMessage('Saved to dictionary! ✓');
+                    setTimeout(() => setShowSuccessMessage(''), 2000);
+                    setSelectedWord(null);
+                  }}
+                >
+                  Add to Dictionary
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+
+      {/* Success Message */}
+      {showSuccessMessage && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+          {showSuccessMessage}
         </div>
       )}
 
       <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Language Learning Comments ({comments.length})
+          Language Learning Comments ({allComments.length})
         </h3>
 
         {/* Comments */}
         <div className="space-y-4 mb-6">
-          {comments.map((comment) => (
+          {allComments.map((comment) => (
             <div key={comment.id} className="bg-white rounded-lg p-4 border border-yellow-200">
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -1006,12 +1057,11 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-1">
                     <span className="font-medium text-gray-900">{comment.user}</span>
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">
-                      {comment.badge}
-                    </span>
-                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
-                      {comment.level}
-                    </span>
+                    {comment.level && (
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                        Level {comment.level}
+                      </span>
+                    )}
                   </div>
                   
                   <div className="text-xs text-gray-500 mb-2">
@@ -1087,7 +1137,10 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
                   </label>
                 </div>
                 
-                <button className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600 flex items-center space-x-1">
+                <button 
+                  onClick={handlePostComment}
+                  className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600 flex items-center space-x-1"
+                >
                   <Send className="w-4 h-4" />
                   <span>Post Comment</span>
                 </button>

@@ -3,12 +3,13 @@ import Auth from './components/Auth';
 import NewsFeed from './components/NewsFeed';
 import Onboarding from './components/Onboarding';
 import Profile from './components/Profile';
+import Dictionary from './components/Dictionary';
 import './App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [currentView, setCurrentView] = useState('feed'); // 'feed' or 'profile'
+  const [currentView, setCurrentView] = useState('feed'); // 'feed', 'profile', or 'dictionary'
   const [userProfile, setUserProfile] = useState(null);
 
   const handleAuthComplete = (authData) => {
@@ -44,6 +45,15 @@ function App() {
   // Show onboarding for new users
   if (showOnboarding) {
     return <Onboarding onComplete={handleOnboardingComplete} />;
+  }
+
+  // Show dictionary page
+  if (currentView === 'dictionary') {
+    return (
+      <Dictionary 
+        onBack={() => setCurrentView('feed')}
+      />
+    );
   }
 
   // Show profile page
@@ -107,6 +117,30 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Navigation Tabs */}
+        <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+          <button
+            onClick={() => setCurrentView('feed')}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              currentView === 'feed' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Feed
+          </button>
+          <button
+            onClick={() => setCurrentView('dictionary')}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              currentView === 'dictionary' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Dictionary
+          </button>
+        </div>
+
         <NewsFeed selectedCountry="Japan" userProfile={userProfile} />
       </main>
     </div>
