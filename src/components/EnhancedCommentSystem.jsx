@@ -985,17 +985,20 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
   return (
     <div className="bg-yellow-50 border-t border-yellow-200">
       {/* Word Translation Popup */}
+      {selectedWord && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setSelectedWord(null)}>
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4" onClick={e => e.stopPropagation()}>
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900 mb-1">{selectedWord.japanese}</div>
               <div className="text-sm text-gray-500 mb-2">{selectedWord.reading}</div>
               <div className="text-lg text-gray-600 mb-2">{selectedWord.english}</div>
+              {selectedWord.level && (
                 <div className="mb-4">
                   <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium">
                     Level {selectedWord.level}
                   </span>
                 </div>
+              )}
               <div className="space-y-2">
                 <button 
                   className="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-200"
@@ -1032,6 +1035,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
             </div>
           </div>
         </div>
+      )}
 
       {/* Success Message */}
       {showSuccessMessage && (
