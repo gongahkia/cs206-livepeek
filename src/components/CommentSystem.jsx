@@ -16,7 +16,7 @@ const CommentSystem = ({ articleId, isJapanese = false }) => {
       content: "我的朋友都很友善友好这个取道了日本之行，虽然我们预计项目会这只是调查，但心理影响很真实的，我们人为日本政府应该做更多工作来清洁这些有外学校场。",
       timestamp: "20m ago",
       likes: 18,
-      difficulty: "Advanced",
+      difficulty: "level 10",
       translated: false,
       translation: "My friends are all very friendly and this route to Japan, although we expect the project to be just a survey, the psychological impact is real, and we think the Japanese government should do more work to clean up these foreign schools."
     },
@@ -31,7 +31,7 @@ const CommentSystem = ({ articleId, isJapanese = false }) => {
       content: "このラーメン店は本当に素晴らしいです！家族で経営していて、味も最高です。",
       timestamp: "15m ago",
       likes: 24,
-      difficulty: "Intermediate",
+      difficulty: "level 5",
       translated: false,
       translation: "This ramen shop is really wonderful! It's family-run and the taste is excellent."
     },
@@ -46,7 +46,7 @@ const CommentSystem = ({ articleId, isJapanese = false }) => {
       content: "日本の文化はとても興味深いです。もっと学びたいです！",
       timestamp: "10m ago",
       likes: 12,
-      difficulty: "Beginner",
+      difficulty: "level 1",
       translated: false,
       translation: "Japanese culture is very interesting. I want to learn more!"
     }
@@ -66,9 +66,9 @@ const CommentSystem = ({ articleId, isJapanese = false }) => {
 
   const getDifficultyColor = (difficulty) => {
     switch(difficulty) {
-      case 'Beginner': return 'bg-green-100 text-green-700';
-      case 'Intermediate': return 'bg-yellow-100 text-yellow-700';
-      case 'Advanced': return 'bg-red-100 text-red-700';
+      case 'level 1': return 'bg-green-100 text-green-700';
+      case 'level 5': return 'bg-yellow-100 text-yellow-700';
+      case 'level 10': return 'bg-red-100 text-red-700';
       default: return 'bg-gray-100 text-gray-700';
     }
   };

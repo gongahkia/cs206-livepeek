@@ -9,7 +9,7 @@ const Profile = ({ userProfile, onProfileUpdate, onBack }) => {
     bio: userProfile?.bio || '',
     nativeLanguage: userProfile?.nativeLanguages?.[0] || 'English',
     targetLanguage: userProfile?.targetLanguage || 'Japanese',
-    learningLevel: userProfile?.level || 'intermediate',
+    learningLevel: userProfile?.level || 'level 5',
     location: userProfile?.location || '',
     website: userProfile?.website || '',
     // Privacy settings
@@ -261,9 +261,9 @@ const Profile = ({ userProfile, onProfileUpdate, onBack }) => {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
+                    <option value="level 1">level 1</option>
+                    <option value="level 5">level 5</option>
+                    <option value="level 10">level 10</option>
                     <option value="native">Native</option>
                   </select>
                 </div>

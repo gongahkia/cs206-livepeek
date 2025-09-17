@@ -64,7 +64,7 @@ const Onboarding = ({ onComplete }) => {
       onComplete({
         nativeLanguages,
         targetLanguage,
-        level: 'intermediate'
+        level: 'level 5'
       });
     }
   };
@@ -259,7 +259,7 @@ const Onboarding = ({ onComplete }) => {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 text-left">
               <h3 className="font-semibold text-blue-900 mb-3">Important Notice</h3>
               <ul className="space-y-2 text-blue-800 text-sm">
-                <li>• LivePeek is designed for <strong>intermediate to advanced</strong> language learners</li>
+                <li>• LivePeek is designed for <strong>level 5 to level 10</strong> language learners</li>
                 <li>• We expect you to have a <strong>basic understanding</strong> of your target language</li>
                 <li>• For Japanese: You should be comfortable with hiragana and katakana</li>
                 <li>• Our content includes authentic, real-world conversations</li>

@@ -6,7 +6,7 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
   const [showComments, setShowComments] = useState({});
   const [selectedWord, setSelectedWord] = useState(null);
 
-  // Enhanced Japanese posts with mixed Japanese/English content for intermediate learners
+  // Enhanced Japanese posts with mixed Japanese/English content for level 5 learners
   const japaneseArticles = [
     {
       id: 1,
