@@ -30,25 +30,6 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       difficulty: 6
     },
     {
-      id: 2,
-      author: "佐藤博",
-      authorEn: "Hiroshi Sato",
-      verified: true,
-      location: "東京",
-      time: "5 hours ago",
-      title: "Tokyo の新しい digital art museum が一般公開",
-      content: "Interactive な digital art 展示は、traditional な日本の美学と最先端 technology を組み合わせ、没入型の cultural experience を創造しています。",
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop",
-      tags: ["#アート", "#technology", "#museum"],
-      likes: 1567,
-      comments: 89,
-      shares: 234,
-      source: "reddit",
-      originalSource: "Reddit",
-      externalUrl: "https://reddit.com/r/japan/comments/digital_art_museum",
-      difficulty: 7
-    },
-    {
       id: 3,
       author: "山田花子",
       authorEn: "Hanako Yamada",
@@ -270,6 +251,17 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       'が': { translation: 'is', level: 5 },
       '九州の': { translation: 'of Kyushu', level: 4 },
       'を集めている': { translation: 'collecting', level: 3 },
+      'の季節は': { translation: 'season is', level: 2 },
+      'をもたらしま': { translation: 'offers', level: 1 },
+      'に変化させています': { translation: 'changes', level: 1 },
+      'も生まれています': { translation: 'are born', level: 1 },
+      'が始まっている': { translation: 'is starting', level: 1 },
+      'の変化': { translation: 'changes', level: 1 },
+      'が大きく変わりまし': { translation: 'changes', level: 1 },
+      'を見つけることが': { translation: 'find', level: 1 },
+      'しています。': { translation: 'is seen', level: 1 },
+      'に加えて、fusion': { translation: 'fusion', level: 1 },
+      'で楽しんでいます。Instagram': { translation: 'Instagram', level: 1 },
     };
 
     const translationData = translations[word.toLowerCase()];
