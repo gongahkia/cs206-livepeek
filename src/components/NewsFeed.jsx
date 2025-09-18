@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Bookmark, MessageCircle, Share, Send, BookOpen, Sparkles } from 'lucide-react';
+import { Bookmark, MessageCircle, Share, Send, BookOpen, Sparkles, UserPlus, UserCheck } from 'lucide-react';
 import EnhancedCommentSystem from './EnhancedCommentSystem';
 
 const NewsFeed = ({ selectedCountry, userProfile }) => {
   const [showComments, setShowComments] = useState({});
   const [selectedWord, setSelectedWord] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
+  const [followingUsers, setFollowingUsers] = useState(new Set(['佐藤博', '高橋美咲']));
 
   // Enhanced Japanese posts with mixed Japanese/English content for intermediate learners
   const japaneseArticles = [
@@ -192,6 +193,18 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
 
   const handleMastered = () => {
     showFeedback('Sugoi!', '😊');
+  };
+
+  const handleFollowToggle = (authorName) => {
+    setFollowingUsers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(authorName)) {
+        newSet.delete(authorName);
+      } else {
+        newSet.add(authorName);
+      }
+      return newSet;
+    });
   };
 
   const handleSearch = (query) => {
@@ -434,7 +447,7 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
                     {article.author.charAt(0)}
                   </span>
                 </div>
-                <div>
+                <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <span className="font-medium text-gray-900">{article.author}</span>
                     {article.verified && (
@@ -447,6 +460,26 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
                     {article.location} • {article.time}
                   </div>
                 </div>
+                <button
+                  onClick={() => handleFollowToggle(article.author)}
+                  className={`flex items-center space-x-1 px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                    followingUsers.has(article.author)
+                      ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                      : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                  }`}
+                >
+                  {followingUsers.has(article.author) ? (
+                    <>
+                      <UserCheck className="w-4 h-4" />
+                      <span>Following</span>
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-4 h-4" />
+                      <span>Follow</span>
+                    </>
+                  )}
+                </button>
               </div>
               <div className="flex items-center space-x-2">
                 <a 
