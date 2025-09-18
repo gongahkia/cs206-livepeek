@@ -4,12 +4,14 @@ import NewsFeed from './components/NewsFeed';
 import Onboarding from './components/Onboarding';
 import Profile from './components/Profile';
 import Dictionary from './components/Dictionary';
+import Flashcards from './components/Flashcards';
+import { Star } from 'lucide-react';
 import './App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [currentView, setCurrentView] = useState('feed'); // 'feed', 'profile', or 'dictionary'
+  const [currentView, setCurrentView] = useState('feed'); // 'feed', 'profile', 'dictionary', or 'flashcards'
   const [userProfile, setUserProfile] = useState(null);
 
   const handleAuthComplete = (authData) => {
@@ -50,7 +52,16 @@ function App() {
   // Show dictionary page
   if (currentView === 'dictionary') {
     return (
-      <Dictionary 
+      <Dictionary
+        onBack={() => setCurrentView('feed')}
+      />
+    );
+  }
+
+  // Show flashcards page
+  if (currentView === 'flashcards') {
+    return (
+      <Flashcards
         onBack={() => setCurrentView('feed')}
       />
     );
@@ -122,8 +133,8 @@ function App() {
           <button
             onClick={() => setCurrentView('feed')}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              currentView === 'feed' 
-                ? 'bg-white text-gray-900 shadow-sm' 
+              currentView === 'feed'
+                ? 'bg-white text-gray-900 shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -131,13 +142,25 @@ function App() {
           </button>
           <button
             onClick={() => setCurrentView('dictionary')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              currentView === 'dictionary' 
-                ? 'bg-white text-gray-900 shadow-sm' 
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-1 ${
+              currentView === 'dictionary'
+                ? 'bg-white text-gray-900 shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Dictionary
+            <span>Dictionary</span>
+            <Star className="w-4 h-4 text-yellow-500" />
+          </button>
+          <button
+            onClick={() => setCurrentView('flashcards')}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-1 ${
+              currentView === 'flashcards'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <span>Flashcards</span>
+            <Star className="w-4 h-4 text-yellow-500" />
           </button>
         </div>
 

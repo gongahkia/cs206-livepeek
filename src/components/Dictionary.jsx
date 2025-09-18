@@ -3,9 +3,6 @@ import { ArrowLeft, BookOpen, Star, Trash2, ChevronDown, ChevronUp } from 'lucid
 
 const Dictionary = ({ onBack }) => {
   const [expandedWord, setExpandedWord] = useState(null);
-  const [showFlashcards, setShowFlashcards] = useState(false);
-  const [currentCard, setCurrentCard] = useState(0);
-  const [cardRating, setCardRating] = useState(null);
 
   // Dictionary words with levels
   const dictionaryWords = [
@@ -109,113 +106,14 @@ const Dictionary = ({ onBack }) => {
     setExpandedWord(expandedWord === wordId ? null : wordId);
   };
 
-  const startFlashcards = () => {
-    setShowFlashcards(true);
-    setCurrentCard(0);
-    setCardRating(null);
-  };
 
-  const nextCard = () => {
-    if (currentCard < sortedWords.length - 1) {
-      setCurrentCard(currentCard + 1);
-      setCardRating(null);
-    } else {
-      setShowFlashcards(false);
-      setCurrentCard(0);
-    }
-  };
-
-  const rateCard = (rating) => {
-    setCardRating(rating);
-    setTimeout(() => {
-      nextCard();
-    }, 1000);
-  };
-
-  if (showFlashcards) {
-    const word = sortedWords[currentCard];
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-md mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <button 
-              onClick={() => setShowFlashcards(false)}
-              className="flex items-center text-gray-600 hover:text-gray-800"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Back to Dictionary
-            </button>
-            <span className="text-sm text-gray-500">
-              {currentCard + 1} / {sortedWords.length}
-            </span>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="mb-6">
-              <span className={`inline-block px-3 py-1 rounded-full text-white text-sm font-medium ${getLevelColor(word.level)}`}>
-                Level {word.level}
-              </span>
-            </div>
-            
-            <div className="text-4xl font-bold text-gray-900 mb-4">
-              {word.japanese}
-            </div>
-            
-            <div className="text-lg text-gray-600 mb-6">
-              {word.hiragana}
-            </div>
-
-            {cardRating && (
-              <div className="text-xl text-gray-800 mb-6">
-                {word.english}
-              </div>
-            )}
-
-            {!cardRating ? (
-              <div className="space-y-3">
-                <p className="text-sm text-gray-500 mb-4">How well do you know this word?</p>
-                <button 
-                  onClick={() => rateCard('again')}
-                  className="w-full bg-red-500 text-white py-3 rounded-lg font-medium"
-                >
-                  Again
-                </button>
-                <button 
-                  onClick={() => rateCard('hard')}
-                  className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium"
-                >
-                  Hard
-                </button>
-                <button 
-                  onClick={() => rateCard('good')}
-                  className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium"
-                >
-                  Good
-                </button>
-                <button 
-                  onClick={() => rateCard('easy')}
-                  className="w-full bg-green-500 text-white py-3 rounded-lg font-medium"
-                >
-                  Easy
-                </button>
-              </div>
-            ) : (
-              <div className="text-green-600 font-medium">
-                Rated as {cardRating}!
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <button 
+          <button
             onClick={onBack}
             className="flex items-center text-gray-600 hover:text-gray-800"
           >
@@ -223,13 +121,7 @@ const Dictionary = ({ onBack }) => {
             Back to Feed
           </button>
           <h1 className="text-2xl font-bold text-gray-900">My Dictionary</h1>
-          <button 
-            onClick={startFlashcards}
-            className="flex items-center bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
-          >
-            <BookOpen className="w-4 h-4 mr-2" />
-            Flashcards
-          </button>
+          <div></div>
         </div>
 
         {/* Dictionary Words */}

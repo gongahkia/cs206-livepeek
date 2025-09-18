@@ -366,7 +366,7 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
           </div>
           <div className="text-4xl">🇯🇵</div>
         </div>
-        
+
         {/* Search Bar */}
         <div className="mt-4">
           <div className="relative">
@@ -382,6 +382,36 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500"></div>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Source Count Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <span className="text-blue-600 font-semibold">7</span>
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">Free Sources</h3>
+              <p className="text-sm text-gray-600">Basic content from public feeds</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-purple-50 to-orange-50 rounded-lg shadow-sm border border-purple-200 p-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-orange-500 rounded-full flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900 flex items-center space-x-2">
+                <span>Premium Sources</span>
+                <span className="text-yellow-500">⭐</span>
+              </h3>
+              <p className="text-sm text-gray-600">Pulling from 8 exclusive premium feeds</p>
+            </div>
           </div>
         </div>
       </div>
