@@ -17,7 +17,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         id: 1,
         user: "Li Wei",
         level: "7",
-        location: "Beijing, China",
+        location: "Vancouver, Canada",
         time: "20m ago",
         content: "この place は really authentic です！I've been learning about Japanese food culture と this looks amazing. Can't wait to visit Tokyo someday!",
         likes: 18,
@@ -46,9 +46,9 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 4,
         user: "Maria Garcia",
-        location: "Madrid, Spain",
+        location: "Boston, USA",
         time: "8m ago",
-        content: "As someone learning Japanese, I appreciate the mixed language approach! The ramen culture in Japan is so fascinating compared to Spain.",
+        content: "As someone learning Japanese, I appreciate the mixed language approach! The ラーメン culture in Japan は so fascinating compared to my country.",
         likes: 15,
         avatar: "MG"
       },
@@ -56,7 +56,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         id: 5,
         user: "김민수",
         level: "8",
-        location: "Seoul, Korea",
+        location: "Toronto, Canada",
         time: "5m ago",
         content: "Japanese と Korean の food culture には many similarities があります。This type of family business は both countries で important です。",
         likes: 19,
@@ -85,7 +85,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 8,
         user: "Pierre Dubois",
-        location: "Paris, France",
+        location: "Dublin, Ireland",
         time: "1m ago",
         content: "Je suis débutant in Japanese but this makes me want to learn more! The food culture looks incredible. Merci for sharing!",
         likes: 8,
@@ -95,7 +95,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         id: 9,
         user: "Chen Wei",
         level: "9",
-        location: "Shanghai, China",
+        location: "Auckland, New Zealand",
         time: "30s ago",
         content: "中国にも similar family restaurants があります。But Japanese ラーメン culture is unique! Planning a food tour to Tokyo next year.",
         likes: 14,
@@ -140,7 +140,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Carlos Silva",
         
         level: "8",
-        location: "São Paulo, Brazil",
+        location: "Melbourne, Australia",
         time: "20m ago",
         content: "Technology と art の fusion は本当に beautiful です！Brazil also has some digital art spaces but nothing like this scale.",
         likes: 13,
@@ -151,9 +151,9 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Anna Kowalski",
         
         level: "5",
-        location: "Warsaw, Poland",
+        location: "Manchester, UK",
         time: "18m ago",
-        content: "I'm still learning basic Japanese but this looks amazing! The interactive elements must make it so engaging for visitors.",
+        content: "I'm still learning basic 日本語 but this looks amazing! The interactive elements must make it so engaging for visitors.",
         likes: 9,
         avatar: "AK"
       },
@@ -175,7 +175,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         level: "8",
         location: "Los Angeles, USA",
         time: "12m ago",
-        content: "As an artist myself, I'm fascinated by how Japan blends tradition with innovation. This museum represents that perfectly!",
+        content: "As an artist myself, I'm fascinated by how Japan blends 伝統 with innovation. This museum represents that perfectly!",
         likes: 17,
         avatar: "DK"
       },
@@ -184,7 +184,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Sophie Martin",
         
         level: "6",
-        location: "Lyon, France",
+        location: "Calgary, Canada",
         time: "10m ago",
         content: "The immersive experience must be incredible! French museums are starting to adopt similar technology. Japan is always ahead!",
         likes: 12,
@@ -195,7 +195,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "李小明",
         
         level: "8",
-        location: "Beijing, China",
+        location: "Chicago, USA",
         time: "8m ago",
         content: "Digital art は future of museums だと思います。This type of cultural experience helps language learners understand Japan better.",
         likes: 16,
@@ -206,7 +206,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Roberto Rossi",
         
         level: "6",
-        location: "Rome, Italy",
+        location: "Perth, Australia",
         time: "5m ago",
         content: "Italy has amazing traditional art, but this digital approach is revolutionary! Would love to experience this in person someday.",
         likes: 14,
@@ -219,7 +219,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         level: "5",
         location: "Toronto, Canada",
         time: "2m ago",
-        content: "This makes me even more excited to learn Japanese! The culture is so rich and innovative. Adding this to my Tokyo bucket list!",
+        content: "This makes me even more excited to learn 日本語! The culture is so rich and innovative. Adding this to my Tokyo bucket list!",
         likes: 10,
         avatar: "JB"
       }
@@ -241,7 +241,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Isabella Rodriguez",
         
         level: "6",
-        location: "Barcelona, Spain",
+        location: "Birmingham, UK",
         time: "40m ago",
         content: "The creativity in Harajuku is inspiring! Spanish fashion is more traditional, but I love how Japanese youth express themselves so freely.",
         likes: 18,
@@ -263,9 +263,9 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Thomas Mueller",
         
         level: "5",
-        location: "Berlin, Germany",
+        location: "Edinburgh, Scotland",
         time: "30m ago",
-        content: "German fashion is quite conservative compared to this! I admire how Japanese young people aren't afraid to stand out.",
+        content: "German fashion is quite conservative compared to this! I admire how Japanese 若者 aren't afraid to stand out.",
         likes: 15,
         avatar: "TM"
       },
@@ -274,7 +274,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Priya Sharma",
         
         level: "8",
-        location: "Mumbai, India",
+        location: "Wellington, New Zealand",
         time: "25m ago",
         content: "Indian fashion also mixes traditional と modern elements! But Harajuku takes it to a completely different level. So creative!",
         likes: 20,
@@ -285,7 +285,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Lucas Santos",
         
         level: "6",
-        location: "Rio de Janeiro, Brazil",
+        location: "Brisbane, Australia",
         time: "20m ago",
         content: "Brazilian fashion is colorful but this is next level! The way young Japanese people express individuality through fashion is amazing.",
         likes: 16,
@@ -309,7 +309,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         level: "6",
         location: "Melbourne, Australia",
         time: "12m ago",
-        content: "I visited Harajuku last month and was amazed! Everyone was so kind when I tried to compliment their outfits in broken Japanese.",
+        content: "I visited 原宿 last month and was amazed! Everyone was so kind when I tried to compliment their outfits in broken 日本語.",
         likes: 19,
         avatar: "OT"
       },
@@ -318,7 +318,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Ahmed Hassan",
         
         level: "8",
-        location: "Cairo, Egypt",
+        location: "Ottawa, Canada",
         time: "8m ago",
         content: "Fashion as self-expression is universal! But Japanese youth culture takes it to artistic levels. Very inspiring for creative people.",
         likes: 17,
@@ -329,7 +329,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Marie Dubois",
         
         level: "5",
-        location: "Paris, France",
+        location: "Dublin, Ireland",
         time: "3m ago",
         content: "Even Paris fashion week doesn't have this level of creativity! Japanese street fashion is truly an art form.",
         likes: 21,
@@ -340,11 +340,11 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
       {
         id: 1,
         user: "Maria Garcia",
-        
+
         level: "6",
-        location: "Madrid, Spain", 
+        location: "Boston, USA",
         time: "1h ago",
-        content: "Cherry blossom season must be amazing for the economy! I'm planning to visit during sakura season. Any recommendations for best viewing spots?",
+        content: "Cherry blossom season must be amazing for the economy! I'm planning to visit during 桜 season. Any recommendations for best viewing spots?",
         likes: 16,
         avatar: "MG"
       },
@@ -375,7 +375,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Lin Zhang",
         
         level: "6",
-        location: "Shanghai, China",
+        location: "Auckland, New Zealand",
         time: "45m ago",
         content: "中国也有樱花，but Japan's sakura culture is unique! The hanami tradition makes it more than just flowers - it's a cultural event.",
         likes: 20,
@@ -386,7 +386,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Elena Petrov",
         
         level: "5",
-        location: "Moscow, Russia",
+        location: "Glasgow, Scotland",
         time: "40m ago",
         content: "Russian spring is still cold when Japan has sakura! The timing must be perfect for tourism. Very smart seasonal marketing.",
         likes: 12,
@@ -408,7 +408,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Marco Rossi",
         
         level: "8",
-        location: "Milan, Italy",
+        location: "Adelaide, Australia",
         time: "30m ago",
         content: "Italy has beautiful springs too, but sakura season in Japan is legendary! The limited time makes it even more special and valuable.",
         likes: 15,
@@ -441,7 +441,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Fatima Al-Zahra",
         
         level: "5",
-        location: "Dubai, UAE",
+        location: "Savannah, USA",
         time: "15m ago",
         content: "Desert countries like UAE don't have seasons like this! The concept of seasonal tourism based on flowers is fascinating.",
         likes: 14,
@@ -476,7 +476,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Carlos Mendez",
         
         level: "6",
-        location: "Mexico City, Mexico",
+        location: "Phoenix, USA",
         time: "1h 45m ago",
         content: "Mexican culture also blends traditional と modern! But Japanese approach to preserving ceremony while adapting is inspiring.",
         likes: 18,
@@ -498,7 +498,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Ahmed Ali",
         
         level: "5",
-        location: "Cairo, Egypt",
+        location: "Ottawa, Canada",
         time: "1h 35m ago",
         content: "Middle Eastern tea culture is different but equally important! Seeing how Japan modernizes tradition while keeping essence is amazing.",
         likes: 16,
@@ -520,7 +520,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Pierre Laurent",
         
         level: "6",
-        location: "Lyon, France",
+        location: "Calgary, Canada",
         time: "1h 25m ago",
         content: "French café culture is casual, but Japanese tea ceremony has such depth! The meditation aspect appeals to stressed modern life.",
         likes: 19,
@@ -531,7 +531,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Raj Patel",
         
         level: "8",
-        location: "Mumbai, India",
+        location: "Wellington, New Zealand",
         time: "1h 20m ago",
         content: "Indian chai culture is everywhere, but Japanese ceremony teaches patience and mindfulness! Both cultures value tea differently.",
         likes: 22,
@@ -542,7 +542,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Anna Kowalski",
         
         level: "5",
-        location: "Krakow, Poland",
+        location: "Liverpool, UK",
         time: "1h 15m ago",
         content: "Polish tea traditions are simple compared to this! The artistic and spiritual elements of Japanese ceremony are fascinating.",
         likes: 15,
@@ -566,7 +566,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Roberto Silva",
         
         level: "8",
-        location: "São Paulo, Brazil",
+        location: "Melbourne, Australia",
         time: "1d ago",
         content: "Osaka street food is legendary! Brazilian street food is amazing too, but Japanese fusion creativity is next level. Want to try that Korean-Japanese combo!",
         likes: 28,
@@ -599,7 +599,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Isabella Romano",
         
         level: "6",
-        location: "Naples, Italy",
+        location: "San Diego, USA",
         time: "21h ago",
         content: "Italian-Japanese fusion sounds incredible! Naples has amazing street food too, but Osaka's creativity with international flavors is inspiring.",
         likes: 19,
@@ -610,7 +610,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Chen Wei",
         
         level: "8",
-        location: "Guangzhou, China",
+        location: "Houston, USA",
         time: "20h ago",
         content: "Chinese street food culture is huge, but Japanese attention to detail even in street food is remarkable! Quality と creativity の perfect balance.",
         likes: 23,
@@ -654,7 +654,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Hans Mueller",
         
         level: "8",
-        location: "Munich, Germany",
+        location: "Denver, USA",
         time: "16h ago",
         content: "German street food is traditional sausages, but this fusion concept is revolutionary! Innovation while respecting tradition.",
         likes: 18,
@@ -665,7 +665,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Priya Sharma",
         
         level: "6",
-        location: "Delhi, India",
+        location: "Winnipeg, Canada",
         time: "15h ago",
         content: "Indian street food has fusion too, but Japanese precision in preparation is amazing! Would love to try these Osaka innovations.",
         likes: 22,
@@ -711,7 +711,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Lars Andersen",
         
         level: "8",
-        location: "Copenhagen, Denmark",
+        location: "Belfast, Northern Ireland",
         time: "2d ago",
         content: "Scandinavian work-life balance was already good, but Japan's change from overwork culture to remote flexibility is revolutionary!",
         likes: 24,
@@ -722,7 +722,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Maria Santos",
         
         level: "5",
-        location: "Lisbon, Portugal",
+        location: "Cardiff, Wales",
         time: "1d 23h ago",
         content: "Portuguese companies also adapted to remote work, but Japanese transformation shows how global events can change deep cultural practices.",
         likes: 18,
@@ -755,7 +755,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Sophie Martin",
         
         level: "6",
-        location: "Paris, France",
+        location: "Dublin, Ireland",
         time: "1d 20h ago",
         content: "French work culture values long lunches, Japanese valued long hours. Both are finding new balance with remote work flexibility!",
         likes: 22,
@@ -766,7 +766,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Raj Patel",
         
         level: "8",
-        location: "Bangalore, India",
+        location: "Portland, USA",
         time: "1d 19h ago",
         content: "India's IT sector was remote-ready, but seeing traditional Japanese companies change shows technology's power to transform culture.",
         likes: 26,
@@ -777,7 +777,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Carlos Rodriguez",
         
         level: "6",
-        location: "Buenos Aires, Argentina",
+        location: "Nashville, USA",
         time: "1d 18h ago",
         content: "Latin American work culture is family-focused, so remote work fits well. Japan's adaptation from group-office culture is more dramatic!",
         likes: 20,
@@ -812,7 +812,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Thomas Schmidt",
         
         level: "6",
-        location: "Munich, Germany",
+        location: "Denver, USA",
         time: "3d ago",
         content: "German tourists usually go to Tokyo/Kyoto, but Kyushu sounds amazing! The combination of nature and history is exactly what we love.",
         likes: 23,
@@ -823,7 +823,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Chen Li",
         
         level: "8",
-        location: "Taipei, Taiwan",
+        location: "Halifax, Canada",
         time: "2d 23h ago",
         content: "Taiwan and Kyushu have similar subtropical climates! The natural beauty and local communities sound wonderful for cultural exchange.",
         likes: 28,
@@ -834,7 +834,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Isabella Garcia",
         
         level: "5",
-        location: "Barcelona, Spain",
+        location: "Birmingham, UK",
         time: "2d 22h ago",
         content: "Spanish tourists love discovering hidden places! Kyushu's combination of nature and culture sounds perfect for authentic travel experiences.",
         likes: 19,
@@ -867,7 +867,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Marie Dubois",
         
         level: "6",
-        location: "Nice, France",
+        location: "Charleston, USA",
         time: "2d 19h ago",
         content: "French Riviera is beautiful, but Kyushu's natural diversity sounds incredible! The local community involvement in tourism is inspiring.",
         likes: 21,
@@ -878,7 +878,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Ahmed Hassan",
         
         level: "8",
-        location: "Dubai, UAE",
+        location: "Savannah, USA",
         time: "2d 18h ago",
         content: "Desert landscapes are beautiful, but Kyushu's green mountains and hot springs offer completely different natural experiences!",
         likes: 24,
@@ -889,7 +889,7 @@ const EnhancedCommentSystem = ({ articleId, userProfile }) => {
         user: "Anna Petrov",
         
         level: "5",
-        location: "St. Petersburg, Russia",
+        location: "St. John's, Canada",
         time: "2d 17h ago",
         content: "Russian nature is vast and cold, but Kyushu's warm subtropical environment sounds like paradise! Perfect for winter escapes.",
         likes: 18,
