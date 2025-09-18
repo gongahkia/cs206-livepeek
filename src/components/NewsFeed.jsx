@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Bookmark, MessageCircle, Share, Send, BookOpen, Sparkles } from 'lucide-react';
+import { Bookmark, MessageCircle, Share, Send, BookOpen, Sparkles, UserPlus, UserCheck } from 'lucide-react';
 import EnhancedCommentSystem from './EnhancedCommentSystem';
 
 const NewsFeed = ({ selectedCountry, userProfile }) => {
   const [showComments, setShowComments] = useState({});
   const [selectedWord, setSelectedWord] = useState(null);
+  const [feedbackMessage, setFeedbackMessage] = useState(null);
+  const [followingUsers, setFollowingUsers] = useState(new Set(['佐藤博', '高橋美咲']));
 
   // Enhanced Japanese posts with mixed Japanese/English content for intermediate learners
   const japaneseArticles = [
@@ -166,6 +168,45 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
 
+  const getLevelColor = (level) => {
+    if (level <= 3) return 'bg-green-500';
+    if (level <= 6) return 'bg-blue-500';
+    if (level <= 8) return 'bg-orange-500';
+    return 'bg-red-500';
+  };
+
+  const showFeedback = (message, icon) => {
+    setFeedbackMessage({ message, icon });
+    setTimeout(() => {
+      setFeedbackMessage(null);
+      setSelectedWord(null);
+    }, 2000);
+  };
+
+  const handleGotIt = () => {
+    showFeedback('Ganbatte!', '💪');
+  };
+
+  const handleAddToDictionary = () => {
+    showFeedback('Saved to dictionary!', '✓');
+  };
+
+  const handleMastered = () => {
+    showFeedback('Sugoi!', '😊');
+  };
+
+  const handleFollowToggle = (authorName) => {
+    setFollowingUsers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(authorName)) {
+        newSet.delete(authorName);
+      } else {
+        newSet.add(authorName);
+      }
+      return newSet;
+    });
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query.trim()) {
@@ -213,60 +254,61 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
   const handleWordClick = (word, isJapanese) => {
     // Simple word translation logic
     const translations = {
-      // Japanese to English
-      '地元': 'local',
-      'ラーメン': 'ramen',
-      '店': 'shop/store',
-      '東京': 'Tokyo',
-      '地区': 'district',
-      '探索': 'explore',
-      '提供': 'provide',
-      '新しい': 'new',
-      '一般公開': 'public opening',
-      '美学': 'aesthetics',
-      '最先端': 'cutting-edge',
-      '創造': 'create',
-      '若い': 'young',
-      '変化': 'change',
-      '季節': 'season',
-      '観光': 'tourism',
-      // English to Japanese
-      'hidden': '隠れた',
-      'busy': '忙しい',
-      'culture': '文化',
-      'family-run': '家族経営',
-      'business': 'ビジネス',
-      'authentic': '本格的な',
-      'digital': 'デジタル',
-      'museum': '美術館',
-      'interactive': 'インタラクティブ',
-      'traditional': '伝統的な',
-      'technology': '技術',
-      'experience': '体験',
-      'evolution': '進化',
-      'creativity': '創造性',
-      'expression': '表現',
-      'constantly': '絶えず',
-      'elements': '要素',
-      'modern': '現代の',
-      'trends': 'トレンド',
-      'fusion': '融合',
-      'economic': '経済的な',
-      'impact': '影響',
-      'massive': '大規模な',
-      'boost': '押し上げ',
-      'special': '特別な',
-      'events': 'イベント',
-      'products': '製品',
-      'visitors': '訪問者',
-      'attract': '引きつける'
+      // Japanese to English with difficulty levels
+      '地元': { translation: 'local', level: 4 },
+      'ラーメン': { translation: 'ramen', level: 2 },
+      '店': { translation: 'shop/store', level: 3 },
+      '東京': { translation: 'Tokyo', level: 1 },
+      '地区': { translation: 'district', level: 5 },
+      '探索': { translation: 'explore', level: 6 },
+      '提供': { translation: 'provide', level: 7 },
+      '新しい': { translation: 'new', level: 2 },
+      '一般公開': { translation: 'public opening', level: 8 },
+      '美学': { translation: 'aesthetics', level: 9 },
+      '最先端': { translation: 'cutting-edge', level: 8 },
+      '創造': { translation: 'create', level: 6 },
+      '若い': { translation: 'young', level: 3 },
+      '変化': { translation: 'change', level: 5 },
+      '季節': { translation: 'season', level: 4 },
+      '観光': { translation: 'tourism', level: 5 },
+      // English to Japanese with difficulty levels
+      'hidden': { translation: '隠れた', level: 5 },
+      'busy': { translation: '忙しい', level: 3 },
+      'culture': { translation: '文化', level: 4 },
+      'family-run': { translation: '家族経営', level: 7 },
+      'business': { translation: 'ビジネス', level: 4 },
+      'authentic': { translation: '本格的な', level: 6 },
+      'digital': { translation: 'デジタル', level: 3 },
+      'museum': { translation: '美術館', level: 4 },
+      'interactive': { translation: 'インタラクティブ', level: 6 },
+      'traditional': { translation: '伝統的な', level: 5 },
+      'technology': { translation: '技術', level: 4 },
+      'experience': { translation: '体験', level: 5 },
+      'evolution': { translation: '進化', level: 6 },
+      'creativity': { translation: '創造性', level: 7 },
+      'expression': { translation: '表現', level: 6 },
+      'constantly': { translation: '絶えず', level: 8 },
+      'elements': { translation: '要素', level: 6 },
+      'modern': { translation: '現代の', level: 4 },
+      'trends': { translation: 'トレンド', level: 5 },
+      'fusion': { translation: '融合', level: 7 },
+      'economic': { translation: '経済的な', level: 6 },
+      'impact': { translation: '影響', level: 5 },
+      'massive': { translation: '大規模な', level: 7 },
+      'boost': { translation: '押し上げ', level: 6 },
+      'special': { translation: '特別な', level: 3 },
+      'events': { translation: 'イベント', level: 3 },
+      'products': { translation: '製品', level: 4 },
+      'visitors': { translation: '訪問者', level: 4 },
+      'attract': { translation: '引きつける', level: 5 }
     };
 
-    const translation = translations[word.toLowerCase()];
-    if (translation) {
+    const translationData = translations[word.toLowerCase()];
+    if (translationData) {
       setSelectedWord({
         original: word,
-        translation: translation,
+        translation: translationData.translation,
+        level: translationData.level,
         isJapanese: isJapanese
       });
     }
@@ -351,27 +393,44 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
       {selectedWord && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setSelectedWord(null)}>
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4" onClick={e => e.stopPropagation()}>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900 mb-2">{selectedWord.original}</div>
-              <div className="text-lg text-gray-600 mb-4">{selectedWord.translation}</div>
-              <div className="flex space-x-3">
-                <button 
-                  className="flex-1 bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600"
-                  onClick={() => setSelectedWord(null)}
-                >
-                  Got it!
-                </button>
-                <button 
-                  className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-200"
-                  onClick={() => {
-                    // Add to dictionary logic would go here
-                    setSelectedWord(null);
-                  }}
-                >
-                  Add to Dictionary
-                </button>
+            {!feedbackMessage ? (
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900 mb-2">{selectedWord.original}</div>
+                <div className="text-lg text-gray-600 mb-3">{selectedWord.translation}</div>
+                {selectedWord.level && (
+                  <div className="mb-4">
+                    <span className={`inline-block px-3 py-1 rounded-full text-white text-sm font-medium ${getLevelColor(selectedWord.level)}`}>
+                      Level {selectedWord.level}
+                    </span>
+                  </div>
+                )}
+                <div className="flex space-x-2">
+                  <button
+                    className="flex-1 bg-orange-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-orange-600"
+                    onClick={handleGotIt}
+                  >
+                    Got it!
+                  </button>
+                  <button
+                    className="flex-1 bg-green-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-600"
+                    onClick={handleMastered}
+                  >
+                    Mastered
+                  </button>
+                  <button
+                    className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-200"
+                    onClick={handleAddToDictionary}
+                  >
+                    Add to Dictionary
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4">{feedbackMessage.icon}</div>
+                <div className="text-xl font-semibold text-gray-900">{feedbackMessage.message}</div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -388,7 +447,7 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
                     {article.author.charAt(0)}
                   </span>
                 </div>
-                <div>
+                <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <span className="font-medium text-gray-900">{article.author}</span>
                     {article.verified && (
@@ -401,6 +460,26 @@ const NewsFeed = ({ selectedCountry, userProfile }) => {
                     {article.location} • {article.time}
                   </div>
                 </div>
+                <button
+                  onClick={() => handleFollowToggle(article.author)}
+                  className={`flex items-center space-x-1 px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                    followingUsers.has(article.author)
+                      ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                      : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                  }`}
+                >
+                  {followingUsers.has(article.author) ? (
+                    <>
+                      <UserCheck className="w-4 h-4" />
+                      <span>Following</span>
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-4 h-4" />
+                      <span>Follow</span>
+                    </>
+                  )}
+                </button>
               </div>
               <div className="flex items-center space-x-2">
                 <a 
