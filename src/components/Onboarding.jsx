@@ -108,7 +108,7 @@ const Onboarding = ({ onComplete }) => {
                 What's your native language(s)?
               </label>
               <div className="grid grid-cols-2 gap-3">
-                {['English', 'Spanish', 'French', 'German', 'Chinese', 'Korean'].map((lang) => (
+                {['English'].map((lang) => (
                   <button
                     key={lang}
                     onClick={() => handleLanguageToggle(lang)}
