@@ -13,6 +13,9 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentView, setCurrentView] = useState('feed'); // 'feed', 'profile', 'dictionary', or 'flashcards'
   const [userProfile, setUserProfile] = useState(null);
+  const [userDictionary, setUserDictionary] = useState([
+    // Start with empty dictionary - users will build their own
+  ]);
 
   const handleAuthComplete = (authData) => {
     setIsAuthenticated(true);
@@ -39,6 +42,33 @@ function App() {
     setCurrentView('feed');
   };
 
+  const addWordToDictionary = (wordData) => {
+    const newWord = {
+      id: Date.now(),
+      japanese: wordData.japanese,
+      hiragana: wordData.hiragana || wordData.japanese,
+      english: wordData.english,
+      level: wordData.level || 5,
+      example: wordData.example || `${wordData.japanese}の例文です。`,
+      exampleEn: wordData.exampleEn || `Example sentence with ${wordData.english}.`,
+      source: wordData.source || "LivePeek Post",
+      dateAdded: new Date().toISOString()
+    };
+
+    setUserDictionary(prev => {
+      // Check if word already exists
+      const exists = prev.some(word => word.japanese === newWord.japanese);
+      if (exists) {
+        return prev; // Don't add duplicates
+      }
+      return [...prev, newWord];
+    });
+  };
+
+  const removeWordFromDictionary = (wordId) => {
+    setUserDictionary(prev => prev.filter(word => word.id !== wordId));
+  };
+
   // Show authentication if not authenticated
   if (!isAuthenticated) {
     return <Auth onAuthComplete={handleAuthComplete} />;
@@ -54,6 +84,8 @@ function App() {
     return (
       <Dictionary
         onBack={() => setCurrentView('feed')}
+        userDictionary={userDictionary}
+        onRemoveWord={removeWordFromDictionary}
       />
     );
   }
@@ -63,6 +95,7 @@ function App() {
     return (
       <Flashcards
         onBack={() => setCurrentView('feed')}
+        userDictionary={userDictionary}
       />
     );
   }
@@ -164,7 +197,12 @@ function App() {
           </button>
         </div>
 
-        <NewsFeed selectedCountry="Japan" userProfile={userProfile} />
+        <NewsFeed 
+          selectedCountry="Japan" 
+          userProfile={userProfile} 
+          onAddWordToDictionary={addWordToDictionary}
+          userDictionary={userDictionary}
+        />
       </main>
     </div>
   );

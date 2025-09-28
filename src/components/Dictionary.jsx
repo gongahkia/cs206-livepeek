@@ -1,94 +1,25 @@
 import React, { useState } from 'react';
 import { ArrowLeft, BookOpen, Star, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 
-const Dictionary = ({ onBack }) => {
+const Dictionary = ({ onBack, userDictionary, onRemoveWord }) => {
   const [expandedWord, setExpandedWord] = useState(null);
+  const [sortBy, setSortBy] = useState('level'); // 'level', 'date', 'alphabetical'
 
-  // Dictionary words with levels
-  const dictionaryWords = [
-    {
-      id: 1,
-      japanese: "ラーメン",
-      hiragana: "らーめん",
-      english: "ramen",
-      level: 3,
-      example: "今日はラーメンを食べました。",
-      exampleEn: "I ate ramen today.",
-      source: "Hidden Ramen Shops post"
-    },
-    {
-      id: 2,
-      japanese: "文化",
-      hiragana: "ぶんか",
-      english: "culture",
-      level: 5,
-      example: "日本の文化は興味深いです。",
-      exampleEn: "Japanese culture is interesting.",
-      source: "Digital Art Museum post"
-    },
-    {
-      id: 3,
-      japanese: "地元",
-      hiragana: "じもと",
-      english: "local",
-      level: 4,
-      example: "地元の人におすすめを聞きました。",
-      exampleEn: "I asked local people for recommendations.",
-      source: "Hidden Ramen Shops post"
-    },
-    {
-      id: 4,
-      japanese: "美味しい",
-      hiragana: "おいしい",
-      english: "delicious",
-      level: 2,
-      example: "このラーメンはとても美味しいです。",
-      exampleEn: "This ramen is very delicious.",
-      source: "Street Food Revolution post"
-    },
-    {
-      id: 5,
-      japanese: "素晴らしい",
-      hiragana: "すばらしい",
-      english: "wonderful",
-      level: 6,
-      example: "素晴らしい経験でした。",
-      exampleEn: "It was a wonderful experience.",
-      source: "Tea Ceremony post"
-    },
-    {
-      id: 6,
-      japanese: "興味深い",
-      hiragana: "きょうみぶかい",
-      english: "interesting",
-      level: 7,
-      example: "とても興味深い話でした。",
-      exampleEn: "It was a very interesting story.",
-      source: "Digital Art Museum post"
-    },
-    {
-      id: 7,
-      japanese: "伝統",
-      hiragana: "でんとう",
-      english: "tradition",
-      level: 8,
-      example: "日本の伝統を学んでいます。",
-      exampleEn: "I am learning Japanese traditions.",
-      source: "Tea Ceremony post"
-    },
-    {
-      id: 8,
-      japanese: "新しい",
-      hiragana: "あたらしい",
-      english: "new",
-      level: 1,
-      example: "新しいレストランに行きました。",
-      exampleEn: "I went to a new restaurant.",
-      source: "Digital Art Museum post"
+  const getSortedWords = () => {
+    const words = [...userDictionary];
+    switch (sortBy) {
+      case 'level':
+        return words.sort((a, b) => a.level - b.level);
+      case 'date':
+        return words.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+      case 'alphabetical':
+        return words.sort((a, b) => a.japanese.localeCompare(b.japanese));
+      default:
+        return words;
     }
-  ];
+  };
 
-  const sortedWords = [...dictionaryWords].sort((a, b) => a.level - b.level);
+  const sortedWords = getSortedWords();
 
   const getLevelColor = (level) => {
     if (level <= 3) return 'bg-green-500';
@@ -98,8 +29,7 @@ const Dictionary = ({ onBack }) => {
   };
 
   const removeWord = (wordId) => {
-    // In a real app, this would update the dictionary
-    console.log('Removing word:', wordId);
+    onRemoveWord(wordId);
   };
 
   const toggleExpanded = (wordId) => {
@@ -120,8 +50,48 @@ const Dictionary = ({ onBack }) => {
             <ArrowLeft className="w-5 h-5 mr-2" />
             Back to Feed
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">My Dictionary</h1>
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900">My Japanese Dictionary</h1>
+            <p className="text-sm text-gray-600">{sortedWords.length} words learned</p>
+          </div>
           <div></div>
+        </div>
+
+        {/* Statistics and Controls */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{sortedWords.filter(w => w.level <= 3).length}</div>
+                <div className="text-xs text-gray-600">Beginner</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">{sortedWords.filter(w => w.level > 3 && w.level <= 6).length}</div>
+                <div className="text-xs text-gray-600">Intermediate</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-600">{sortedWords.filter(w => w.level > 6 && w.level <= 8).length}</div>
+                <div className="text-xs text-gray-600">Advanced</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-600">{sortedWords.filter(w => w.level > 8).length}</div>
+                <div className="text-xs text-gray-600">Expert</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Sort by:</span>
+              <select 
+                value={sortBy} 
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-sm border border-gray-300 rounded px-2 py-1 bg-white"
+              >
+                <option value="level">Difficulty Level</option>
+                <option value="date">Recently Added</option>
+                <option value="alphabetical">A-Z (Japanese)</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Dictionary Words */}
@@ -189,8 +159,13 @@ const Dictionary = ({ onBack }) => {
         {sortedWords.length === 0 && (
           <div className="text-center py-12">
             <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No words saved yet</h3>
-            <p className="text-gray-600">Start clicking on words in posts to build your dictionary!</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Your Japanese Dictionary is Empty</h3>
+            <p className="text-gray-600 mb-4">Start clicking on Japanese words in posts to build your personal dictionary!</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+              <div className="text-sm text-blue-800">
+                <strong>💡 Tip:</strong> Click on any Japanese word in the news feed to see its meaning, pronunciation, and add it to your dictionary for later review.
+              </div>
+            </div>
           </div>
         )}
       </div>
