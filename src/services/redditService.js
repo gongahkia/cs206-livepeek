@@ -5,7 +5,13 @@ import translationService from './translationService';
 
 class RedditService {
   constructor() {
-    this.baseUrl = 'https://www.reddit.com';
+    // Try multiple Reddit endpoints to improve reliability across networks/adblockers
+    this.baseUrls = [
+      'https://www.reddit.com',
+      'https://api.reddit.com'
+    ];
+    // Preserve the original property for any existing references
+    this.baseUrl = this.baseUrls[0];
     this.cache = new Map();
     this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
     this.subreddits = [
@@ -247,14 +253,25 @@ class RedditService {
     }
 
     try {
-      const url = `${this.baseUrl}/r/${subreddit}/${sort}.json?limit=${limit}&raw_json=1`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Reddit API error: ${response.status}`);
+      // Attempt across multiple base URLs
+      let data = null;
+      let lastError = null;
+      for (const base of this.baseUrls) {
+        try {
+          const url = `${base}/r/${subreddit}/${sort}.json?limit=${limit}&raw_json=1`;
+          const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+          if (!response.ok) {
+            lastError = new Error(`Reddit API error from ${base}: ${response.status}`);
+            continue;
+          }
+          data = await response.json();
+          break;
+        } catch (innerErr) {
+          lastError = innerErr;
+          continue;
+        }
       }
-
-      const data = await response.json();
+      if (!data) throw lastError || new Error('Reddit fetch failed');
       const posts = data.data?.children || [];
       
       // Filter for posts with Japanese content or interesting titles
@@ -374,14 +391,24 @@ class RedditService {
   // Get a single post by ID (for detailed view)
   async getPostById(postId) {
     try {
-      const url = `${this.baseUrl}/api/info.json?id=t3_${postId}&raw_json=1`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Reddit API error: ${response.status}`);
+      let data = null;
+      let lastError = null;
+      for (const base of this.baseUrls) {
+        try {
+          const url = `${base}/api/info.json?id=t3_${postId}&raw_json=1`;
+          const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+          if (!response.ok) {
+            lastError = new Error(`Reddit API error from ${base}: ${response.status}`);
+            continue;
+          }
+          data = await response.json();
+          break;
+        } catch (innerErr) {
+          lastError = innerErr;
+          continue;
+        }
       }
-
-      const data = await response.json();
+      if (!data) throw lastError || new Error('Reddit fetch failed');
       const post = data.data?.children[0];
       
       if (!post) return null;
@@ -406,14 +433,24 @@ class RedditService {
 
     try {
       // Reddit permalink format: /r/subreddit/comments/post_id/title/
-      const url = `${this.baseUrl}${permalink}.json?limit=${limit}&raw_json=1`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Reddit API error: ${response.status}`);
+      let data = null;
+      let lastError = null;
+      for (const base of this.baseUrls) {
+        try {
+          const url = `${base}${permalink}.json?limit=${limit}&raw_json=1`;
+          const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+          if (!response.ok) {
+            lastError = new Error(`Reddit API error from ${base}: ${response.status}`);
+            continue;
+          }
+          data = await response.json();
+          break;
+        } catch (innerErr) {
+          lastError = innerErr;
+          continue;
+        }
       }
-
-      const data = await response.json();
+      if (!data) throw lastError || new Error('Reddit fetch failed');
       
       // Reddit returns [post_data, comments_data]
       if (!Array.isArray(data) || data.length < 2) {
