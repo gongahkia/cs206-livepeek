@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Auth from './components/Auth';
 import NewsFeed from './components/NewsFeed';
 import Onboarding from './components/Onboarding';
 import Profile from './components/Profile';
@@ -9,7 +8,7 @@ import { Star } from 'lucide-react';
 import './App.css';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentView, setCurrentView] = useState('feed'); // 'feed', 'profile', 'dictionary', or 'flashcards'
   const [userProfile, setUserProfile] = useState(null);
@@ -69,10 +68,7 @@ function App() {
     setUserDictionary(prev => prev.filter(word => word.id !== wordId));
   };
 
-  // Show authentication if not authenticated
-  if (!isAuthenticated) {
-    return <Auth onAuthComplete={handleAuthComplete} />;
-  }
+  // Auth screen removed: app now lands directly on the home feed
 
   // Show onboarding for new users
   if (showOnboarding) {
