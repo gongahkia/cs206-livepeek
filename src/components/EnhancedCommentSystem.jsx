@@ -1,0 +1,926 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { Heart, MessageCircle, Languages, BookOpen, Sparkles, Send, Check, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { handleWordClick as sharedHandleWordClick, addWordToDictionary } from '../lib/wordDatabase';
+import speechService from '../services/speechService';
+import redditService from '../services/redditService';
+import { formatLinkDisplay } from '../utils/textUtils';
+
+const EnhancedCommentSystem = ({ articleId, article, userProfile, userDictionary, onAddWordToDictionary }) => {
+  const [showDictionary, setShowDictionary] = useState(false);
+  const [showAIHelp, setShowAIHelp] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [selectedWord, setSelectedWord] = useState(null);
+  const [showTranslation, setShowTranslation] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState('');
+  const [comments, setComments] = useState([]);
+  const [redditComments, setRedditComments] = useState([]);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState(null);
+  const [commentLikes, setCommentLikes] = useState({});
+  const [likedComments, setLikedComments] = useState(new Set());
+  const commentInputRef = useRef(null);
+  
+  // Speech-to-text states
+  const [isListening, setIsListening] = useState(false);
+  const [speechLanguage, setSpeechLanguage] = useState('ja-JP');
+  const [speechError, setSpeechError] = useState('');
+  const [interimText, setInterimText] = useState('');
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [speakingWord, setSpeakingWord] = useState(false);
+  const [ttsSupported, setTtsSupported] = useState(speechService.isTextToSpeechSupported());
+
+  // Mock comments with complete sentences in both languages
+  const mockComments = {
+    1: [
+      {
+        id: 1,
+        user: "Yuki_Tokyo",
+        content: "この場所は本当に本格的です！地元の人だけが知る隠れた宝石ですね。",
+        likes: 24,
+        avatar: "YT"
+      },
+      {
+        id: 2,
+        user: "RamenLover92", 
+        content: "先月、これらの場所の一つを訪問しました！それを経営していたおじいさんは、私の下手な日本語にとても親切で忍耐強くしてくれました。",
+        likes: 18,
+        avatar: "RL"
+      },
+      {
+        id: 3,
+        user: "TokyoFoodie",
+        content: "These hidden gems are what make Tokyo special. As someone learning Japanese, I appreciate the mixed language approach!",
+        likes: 31,
+        avatar: "TF"
+      },
+      {
+        id: 101,
+        user: "LocalGuide",
+        content: "I've been living in Tokyo for 10 years and still discovering new places like this. The authenticity is incredible!",
+        likes: 15,
+        avatar: "LG"
+      },
+      {
+        id: 102,
+        user: "Sakura_Chan",
+        content: "家族経営のお店は本当に温かい雰囲気がありますね。おじいさんの笑顔が忘れられません。",
+        likes: 22,
+        avatar: "SC"
+      },
+      {
+        id: 103,
+        user: "FoodExplorer",
+        content: "The ramen here is absolutely phenomenal! You can taste the generations of tradition in every bowl.",
+        likes: 19,
+        avatar: "FE"
+      }
+    ],
+    2: [
+      {
+        id: 4,
+        user: "SakuraWatcher",
+        content: "Italy has beautiful springs too, but sakura season in Japan is legendary! The limited time makes it even more special and valuable.",
+        likes: 45,
+        avatar: "SW"
+      },
+      {
+        id: 5,
+        user: "NaturePhotographer",
+        content: "桜の季節は本当に美しいです。毎年完璧な写真を撮ろうとしますが、自然の美しさは写真を超えています。",
+        likes: 28,
+        avatar: "NP"
+      },
+      {
+        id: 6,
+        user: "SpringLover",
+        content: "The timing is everything with sakura! You have to plan your trip perfectly to catch the peak bloom.",
+        likes: 15,
+        avatar: "SL"
+      },
+      {
+        id: 201,
+        user: "Hanami_Expert",
+        content: "花見の文化は日本の心です。家族や友達と一緒に桜の下で過ごす時間は本当に特別ですね。",
+        likes: 33,
+        avatar: "HE"
+      },
+      {
+        id: 202,
+        user: "TravelBlogger",
+        content: "I've traveled to Japan three times just for sakura season. Each experience is unique and magical!",
+        likes: 27,
+        avatar: "TB"
+      },
+      {
+        id: 203,
+        user: "TokyoResident",
+        content: "毎年桜を見ていても、その美しさに感動します。短い期間だからこそ、より一層貴重に感じられます。",
+        likes: 41,
+        avatar: "TR"
+      }
+    ],
+    3: [
+      {
+        id: 7,
+        user: "FashionForward",
+        content: "Tokyo's fashion scene is incredible! The way young designers blend traditional and modern elements is inspiring.",
+        likes: 22,
+        avatar: "FF"
+      },
+      {
+        id: 8,
+        user: "StreetStyleFan",
+        content: "原宿のストリートファッションは世界中で有名です。創造性と自己表現の最高峰です！",
+        likes: 19,
+        avatar: "SS"
+      },
+      {
+        id: 9,
+        user: "TokyoExplorer",
+        content: "I love how Tokyo combines old and new so seamlessly. Every street corner has a story!",
+        likes: 15,
+        avatar: "TE"
+      },
+      {
+        id: 301,
+        user: "FashionStudent",
+        content: "日本のファッションデザインから多くのインスピレーションを得ています。伝統と革新の完璧なバランスです。",
+        likes: 28,
+        avatar: "FS"
+      },
+      {
+        id: 302,
+        user: "StyleInfluencer",
+        content: "Harajuku is like a living fashion museum! Every visit I discover new trends and creative expressions.",
+        likes: 34,
+        avatar: "SI"
+      },
+      {
+        id: 303,
+        user: "DesignLover",
+        content: "若いデザイナーたちの創造力は本当に素晴らしいです。世界に影響を与える日本のファッション文化を誇りに思います。",
+        likes: 26,
+        avatar: "DL"
+      }
+    ],
+    4: [
+      {
+        id: 10,
+        user: "CultureLover",
+        content: "日本の文化は本当に深いです。毎回新しいことを学びます。",
+        likes: 28,
+        avatar: "CL"
+      },
+      {
+        id: 11,
+        user: "TravelBlogger",
+        content: "This post perfectly captures the essence of Japanese culture! The blend of tradition and modernity is fascinating.",
+        likes: 33,
+        avatar: "TB"
+      },
+      {
+        id: 401,
+        user: "KyotoNative",
+        content: "伝統的な建築と現代的なデザインが調和している様子は、日本の美意識を表していますね。",
+        likes: 25,
+        avatar: "KN"
+      },
+      {
+        id: 402,
+        user: "ArchitectureFan",
+        content: "The way Japanese architects preserve historical elements while embracing innovation is truly remarkable!",
+        likes: 31,
+        avatar: "AF"
+      },
+      {
+        id: 403,
+        user: "CulturalStudent",
+        content: "日本に住んで5年になりますが、まだまだ学ぶことがたくさんあります。文化の奥深さに感動しています。",
+        likes: 22,
+        avatar: "CS"
+      },
+      {
+        id: 404,
+        user: "HeritageExpert",
+        content: "Japan's ability to maintain its cultural identity while adapting to global changes is a lesson for the world.",
+        likes: 38,
+        avatar: "HE"
+      }
+    ],
+    5: [
+      {
+        id: 12,
+        user: "FoodieAdventurer",
+        content: "Traditional takoyaki and okonomiyaki are amazing, but the fusion cuisine here is incredible! Korean-Japanese and Italian-Japanese combinations are especially popular.",
+        likes: 41,
+        avatar: "FA"
+      },
+      {
+        id: 13,
+        user: "OsakaLocal",
+        content: "大阪の食べ物は世界一です！この記事は私たちの食文化を完璧に表現しています。",
+        likes: 27,
+        avatar: "OL"
+      },
+      {
+        id: 501,
+        user: "ChefInTraining",
+        content: "The creativity in Osaka's food scene is unmatched! Every dish tells a story of cultural fusion and innovation.",
+        likes: 35,
+        avatar: "CT"
+      },
+      {
+        id: 502,
+        user: "FoodCritic",
+        content: "関西の味付けは本当に独特で美味しいです。特に出汁の文化は他の地域では味わえない深みがあります。",
+        likes: 29,
+        avatar: "FC"
+      },
+      {
+        id: 503,
+        user: "StreetFoodLover",
+        content: "Dotonbori is a food paradise! The energy, the flavors, the atmosphere - it's an unforgettable culinary experience.",
+        likes: 33,
+        avatar: "SF"
+      },
+      {
+        id: 504,
+        user: "CulinaryExplorer",
+        content: "大阪で食べた料理は忘れられません。伝統的な味と新しいアイデアの組み合わせが素晴らしいです。",
+        likes: 24,
+        avatar: "CE"
+      }
+    ],
+    6: [
+      {
+        id: 14,
+        user: "ArchitectureFan",
+        content: "The blend of traditional and modern architecture in Japan is breathtaking. Every building tells a story!",
+        likes: 19,
+        avatar: "AF"
+      },
+      {
+        id: 15,
+        user: "DesignStudent",
+        content: "日本の建築デザインから多くのインスピレーションを得ています。伝統と革新の完璧なバランスです。",
+        likes: 24,
+        avatar: "DS"
+      },
+      {
+        id: 601,
+        user: "UrbanPlanner",
+        content: "Tokyo's skyline is a masterpiece of architectural evolution. Ancient temples coexist beautifully with modern skyscrapers.",
+        likes: 32,
+        avatar: "UP"
+      },
+      {
+        id: 602,
+        user: "BuildingEnthusiast",
+        content: "木造建築の技術は本当に素晴らしいです。何百年も前の建物が今でも美しく保たれているのは驚きです。",
+        likes: 28,
+        avatar: "BE"
+      },
+      {
+        id: 603,
+        user: "ArchitecturalTourist",
+        content: "Every visit to Japan reveals new architectural wonders. The attention to detail and craftsmanship is unparalleled!",
+        likes: 26,
+        avatar: "AT"
+      },
+      {
+        id: 604,
+        user: "ConstructionExpert",
+        content: "日本の建築技術は世界最高レベルです。地震に強い構造と美しいデザインを両立させる技術力に感動します。",
+        likes: 35,
+        avatar: "CE"
+      }
+    ]
+  };
+
+  // Fetch Reddit comments when article changes
+  useEffect(() => {
+    const fetchComments = async () => {
+      if (!article || !article.isRedditPost || !article.externalUrl) {
+        return;
+      }
+
+      setLoadingComments(true);
+      try {
+        // Extract permalink from externalUrl
+        // Format: https://www.reddit.com/r/subreddit/comments/id/title/
+        const url = new URL(article.externalUrl);
+        const permalink = url.pathname; // e.g., /r/japan/comments/abc123/title/
+        
+        const fetchedComments = await redditService.fetchPostComments(permalink, 15);
+        setRedditComments(fetchedComments);
+        console.log(`Fetched ${fetchedComments.length} Reddit comments for post`);
+      } catch (error) {
+        console.error('Error fetching Reddit comments:', error);
+        setRedditComments([]);
+      } finally {
+        setLoadingComments(false);
+      }
+    };
+
+    fetchComments();
+  }, [article]);
+
+  // Initialize speech service on component mount
+  useEffect(() => {
+    // Check support immediately
+    const isSupported = speechService.isSpeechRecognitionSupported();
+    setSpeechSupported(isSupported);
+    console.log('Speech recognition supported:', isSupported);
+    
+    // Request microphone permission on first load
+    if (isSupported) {
+      speechService.requestMicrophonePermission().then(granted => {
+        console.log('Microphone permission granted:', granted);
+        if (!granted) {
+          console.warn('Microphone permission not granted');
+        }
+      });
+    } else {
+      console.warn('Speech recognition not supported. Browser may need WebKit Speech Recognition API.');
+    }
+  }, []);
+
+  // Speech-to-text functions
+  const toggleSpeechRecognition = () => {
+    if (!speechSupported) {
+      setSpeechError('Speech recognition not supported in this browser');
+      return;
+    }
+
+    if (isListening) {
+      stopSpeechRecognition();
+    } else {
+      startSpeechRecognition();
+    }
+  };
+
+  const startSpeechRecognition = () => {
+    setSpeechError('');
+    setInterimText('');
+    
+    speechService.startSpeechRecognition(
+      speechLanguage,
+      (result) => {
+        // Handle speech recognition results
+        if (result.final) {
+          // Add final result to comment text
+          setCommentText(prev => {
+            const newText = prev + result.final;
+            return newText;
+          });
+          setInterimText('');
+        } else {
+          // Show interim results
+          setInterimText(result.interim);
+        }
+      },
+      (error) => {
+        // Handle errors
+        setSpeechError(error);
+        setIsListening(false);
+        setInterimText('');
+      },
+      () => {
+        // Handle end of recognition
+        setIsListening(false);
+        setInterimText('');
+      }
+    );
+    
+    setIsListening(true);
+  };
+
+  const stopSpeechRecognition = () => {
+    speechService.stopSpeechRecognition();
+    setIsListening(false);
+    setInterimText('');
+  };
+
+  const changeSpeechLanguage = (newLanguage) => {
+    if (isListening) {
+      stopSpeechRecognition();
+    }
+    setSpeechLanguage(newLanguage);
+    setSpeechError('');
+  };
+
+  // Word click functionality with proper context
+  const handleWordClick = async (word, isJapanese, context = null) => {
+    // Find the comment that contains this word to get full context
+    const comment = allComments.find(c => c.content.includes(word));
+    
+    let fullContext = context;
+    let fullContextTranslation = null;
+    
+    if (comment) {
+      fullContext = comment.content; // Use the comment content as context
+      // Let the translation API handle the translation
+    }
+    
+    await sharedHandleWordClick(word, setSelectedWord, isJapanese, fullContext, fullContextTranslation);
+  };
+
+  const showFeedback = (message, icon) => {
+    setFeedbackMessage({ message, icon });
+    setTimeout(() => {
+      setFeedbackMessage(null);
+      setSelectedWord(null);
+    }, 2000);
+  };
+
+  const handleAddToDictionary = () => {
+    if (selectedWord) {
+      let wordToAdd = {
+        japanese: selectedWord.japanese,
+        hiragana: selectedWord.hiragana,
+        english: selectedWord.english,
+        level: selectedWord.level,
+        example: selectedWord.example,
+        exampleEn: selectedWord.exampleEn
+      };
+
+      const isAlreadyInDictionary = userDictionary.some(item => 
+        item.japanese === wordToAdd.japanese || item.english === wordToAdd.english
+      );
+
+      if (!isAlreadyInDictionary) {
+        onAddWordToDictionary(wordToAdd);
+        showFeedback('Added to dictionary! ✓', '📚');
+      } else {
+        showFeedback('Already in dictionary!', '📖');
+      }
+    }
+  };
+
+  const handleMastered = () => {
+    showFeedback('Sugoi!', '😊');
+  };
+
+  // Speech synthesis for word pronunciation
+  const speakWord = async () => {
+    if (!ttsSupported || !selectedWord) {
+      console.warn('Text-to-speech not supported or no word selected');
+      return;
+    }
+
+    // Stop any current speech
+    if (speakingWord) {
+      speechService.stopSpeaking();
+      setSpeakingWord(false);
+      return;
+    }
+
+    try {
+      setSpeakingWord(true);
+      
+      // Determine if it's a Japanese word or English word
+      const isJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(selectedWord.japanese);
+      
+      if (isJapanese) {
+        await speechService.speakJapanese(selectedWord.japanese, {
+          rate: 0.7, // Slower for learning
+          pitch: 1.0,
+          volume: 1.0
+        });
+      } else {
+        // For English words, speak the Japanese translation if available
+        const textToSpeak = selectedWord.showJapaneseTranslation ? selectedWord.english : selectedWord.japanese;
+        await speechService.speakJapanese(textToSpeak, {
+          rate: 0.7,
+          pitch: 1.0,
+          volume: 1.0
+        });
+      }
+    } catch (error) {
+      console.error('Speech synthesis error:', error);
+    } finally {
+      setSpeakingWord(false);
+    }
+  };
+
+  const handleLikeComment = (commentId) => {
+    // Only allow liking once per comment
+    if (!likedComments.has(commentId)) {
+      const comment = allComments.find(c => c.id === commentId);
+      const currentLikes = comment ? comment.likes : 0;
+      
+      setCommentLikes(prev => ({
+        ...prev,
+        [commentId]: currentLikes + 1
+      }));
+      setLikedComments(prev => new Set([...prev, commentId]));
+    }
+  };
+
+  const handleReplyToComment = (username) => {
+    setCommentText(`@${username} `);
+    setTimeout(() => {
+      if (commentInputRef.current) {
+        commentInputRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+        commentInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  const renderClickableText = (text) => {
+    if (!text) return null;
+    return renderTextSegments(text);
+  };
+  
+  const renderTextSegments = (text) => {
+    const segments = text.split(/(\s+|[。、！？])/);
+    
+    return segments.map((segment, segmentIndex) => {
+      if (!segment.trim()) return <span key={segmentIndex}>{segment}</span>;
+      
+      // Detect and render URLs as clean hyperlinks
+      if (/^https?:\/\/\S+$/i.test(segment)) {
+        const clean = formatLinkDisplay(segment);
+        return (
+          <a
+            key={segmentIndex}
+            href={segment}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-700"
+          >
+            {clean}
+          </a>
+        );
+      }
+      
+      const hasJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(segment);
+      const hasEnglish = /[a-zA-Z]/.test(segment);
+      
+      if (hasJapanese) {
+        return (
+          <span key={segmentIndex}>
+            {segment.split('').map((char, charIndex) => (
+              <span
+                key={`${segmentIndex}-${charIndex}`}
+                className="cursor-pointer hover:bg-yellow-200 hover:shadow-sm border-b border-transparent hover:border-orange-300 rounded px-0.5 py-0.5 transition-all duration-200 inline-block"
+                onClick={() => handleWordClick(char, true, text)}
+                title={`Click to learn: ${char}`}
+                style={{ textDecoration: 'none' }}
+              >
+                {char}
+              </span>
+            ))}
+          </span>
+        );
+      } else if (hasEnglish) {
+        return (
+          <span key={segmentIndex}>
+            <span
+              className="cursor-pointer hover:bg-blue-100 hover:shadow-sm border-b border-transparent hover:border-blue-300 rounded px-1 py-0.5 transition-all duration-200"
+              onClick={() => handleWordClick(segment.trim(), false, text)}
+              title={`Click to learn: ${segment.trim()}`}
+              style={{ textDecoration: 'none' }}
+            >
+              {segment}
+            </span>
+          </span>
+        );
+      }
+      
+      return <span key={segmentIndex}>{segment}</span>;
+    });
+  };
+
+  const getLevelColor = (level) => {
+    if (level <= 2) return 'bg-green-500';
+    if (level <= 4) return 'bg-yellow-500';
+    if (level <= 6) return 'bg-orange-500';
+    return 'bg-red-500';
+  };
+
+  // Use Reddit comments if available, otherwise fall back to mock comments
+  const allComments = redditComments.length > 0 
+    ? [...redditComments, ...comments]
+    : [...(mockComments[articleId] || []), ...comments];
+
+  const handlePostComment = () => {
+    if (commentText.trim()) {
+      const newComment = {
+        id: Date.now(),
+        user: userProfile?.name || 'Anonymous',
+        content: commentText,
+        likes: 0,
+        avatar: userProfile?.name?.charAt(0) || 'A'
+      };
+      
+      setComments([newComment, ...comments]);
+      setCommentText('');
+      setShowSuccessMessage('Comment posted successfully!');
+      setTimeout(() => setShowSuccessMessage(''), 2000);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 mt-6">
+      {/* Header */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+            <MessageCircle className="w-5 h-5 mr-2 text-orange-500" />
+            Comments ({loadingComments ? '...' : allComments.length})
+          </h3>
+        </div>
+      </div>
+
+      {/* Comment Input */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-start space-x-3">
+          <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+            <span className="text-sm font-medium text-orange-700">
+              {userProfile?.name?.charAt(0) || 'U'}
+            </span>
+          </div>
+          <div className="flex-1">
+            <div className="relative">
+              <textarea
+                ref={commentInputRef}
+                value={commentText + (interimText ? ` ${interimText}` : '')}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Share your thoughts... (You can write in any language or use voice input)"
+                className={`w-full p-3 pr-12 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  isListening ? 'bg-red-50 border-red-300' : ''
+                } ${interimText ? 'text-gray-600' : ''}`}
+                rows={3}
+              />
+              
+              {/* Speech-to-text button - Always visible */}
+              <button
+                type="button"
+                onClick={toggleSpeechRecognition}
+                disabled={!speechSupported}
+                className={`absolute right-3 top-3 p-2 rounded-full transition-colors ${
+                  isListening 
+                    ? 'bg-red-500 text-white hover:bg-red-600' 
+                    : speechSupported
+                    ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                }`}
+                title={
+                  !speechSupported 
+                    ? 'Speech recognition not supported in this browser' 
+                    : isListening 
+                    ? 'Stop recording' 
+                    : 'Start voice input'
+                }
+              >
+                {isListening ? (
+                  <MicOff className="w-4 h-4" />
+                ) : (
+                  <Mic className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+            
+            {/* Speech status and language selector */}
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center space-x-3">
+                {/* Language selector - show if supported or show disabled version */}
+                <select
+                  value={speechLanguage}
+                  onChange={(e) => changeSpeechLanguage(e.target.value)}
+                  className="text-xs border border-gray-300 rounded px-2 py-1 bg-white"
+                  disabled={isListening || !speechSupported}
+                >
+                  <option value="ja-JP">🇯🇵 Japanese</option>
+                  <option value="en-US">🇺🇸 English</option>
+                  <option value="ko-KR">🇰🇷 Korean</option>
+                  <option value="zh-CN">🇨🇳 Chinese</option>
+                </select>
+                
+                {/* Helper text */}
+                <span className="text-xs text-gray-500">
+                  {speechSupported ? '💡 Click microphone to use voice input' : 'Voice input not available in this browser'}
+                </span>
+                
+                {/* Speech status */}
+                {isListening && (
+                  <div className="flex items-center space-x-1 text-red-600 text-xs">
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <span>Listening...</span>
+                  </div>
+                )}
+                
+                {interimText && (
+                  <div className="text-xs text-gray-500">
+                    Recognizing: "{interimText}"
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Speech error display */}
+            {speechError && (
+              <div className="mt-2 p-2 bg-red-100 text-red-800 rounded text-xs">
+                {speechError}
+              </div>
+            )}
+            
+            <div className="flex items-center justify-between mt-3">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setShowAIHelp(!showAIHelp)}
+                  className="flex items-center space-x-1 text-sm text-gray-600 hover:text-orange-600"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>AI Help</span>
+                </button>
+              </div>
+              
+              <button 
+                onClick={handlePostComment}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center space-x-1"
+              >
+                <Send className="w-4 h-4" />
+                <span>Post</span>
+              </button>
+            </div>
+
+            {showSuccessMessage && (
+              <div className="mt-2 p-2 bg-green-100 text-green-800 rounded text-sm">
+                {showSuccessMessage}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* AI Help Panel */}
+        {showAIHelp && (
+          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h4 className="text-sm font-medium text-blue-900 mb-3">💡 AI Suggestions</h4>
+            <div className="space-y-2">
+              <div className="p-3 bg-white rounded border border-blue-200">
+                <div className="text-sm text-gray-900 mb-1">This looks amazing! どこですか？</div>
+                <div className="text-xs text-gray-600 italic">This looks amazing! Where is this?</div>
+                <button
+                  onClick={() => setCommentText("This looks amazing! どこですか？")}
+                  className="mt-2 text-xs text-blue-600 hover:text-blue-800"
+                >
+                  Use this suggestion
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Comments List */}
+      <div className="divide-y divide-gray-200">
+        {loadingComments && (
+          <div className="p-6 text-center text-gray-500">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
+            Loading comments...
+          </div>
+        )}
+        {!loadingComments && allComments.length === 0 && (
+          <div className="p-6 text-center text-gray-500">
+            No comments yet. Be the first to comment!
+          </div>
+        )}
+        {!loadingComments && allComments.map((comment) => (
+          <div key={comment.id} className="p-6">
+            <div className="flex items-start space-x-3">
+              <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-gray-600">
+                  {comment.avatar}
+                </span>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className="font-medium text-gray-900">{comment.user}</span>
+                  <span className="text-sm text-gray-500">•</span>
+                  <span className="text-sm text-gray-500">{comment.timeAgo || '2h ago'}</span>
+                  {comment.isRedditComment && (
+                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Reddit</span>
+                  )}
+                </div>
+                <div className="text-gray-800 mb-3">
+                  {renderClickableText(comment.content)}
+                </div>
+                <div className="flex items-center space-x-4">
+                  <button 
+                    onClick={() => handleLikeComment(comment.id)}
+                    className={`flex items-center space-x-1 text-sm transition-colors ${
+                      likedComments.has(comment.id) 
+                        ? 'text-red-500' 
+                        : 'text-gray-500 hover:text-red-500'
+                    }`}
+                  >
+                    <Heart className={`w-4 h-4 ${likedComments.has(comment.id) ? 'fill-red-500' : ''}`} />
+                    <span>{commentLikes[comment.id] || comment.likes}</span>
+                  </button>
+                  <button 
+                    onClick={() => handleReplyToComment(comment.user)}
+                    className="flex items-center space-x-1 text-sm text-gray-500 hover:text-orange-500"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Reply</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Word Learning Popup */}
+      {selectedWord && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="text-center mb-6">
+              <div className="text-3xl font-bold text-gray-900 mb-2">{selectedWord.japanese}</div>
+              <div className="text-lg text-gray-600 mb-2">{selectedWord.hiragana}</div>
+              <div className="text-sm text-gray-500 mb-2">Meaning:</div>
+              <div className="text-xl text-orange-600 font-semibold">{selectedWord.english}</div>
+            </div>
+
+            {/* Level Badge */}
+            {selectedWord.level && (
+              <div className="mb-4 flex items-center space-x-2">
+                <span className={`inline-block px-3 py-1 rounded-full text-white text-sm font-medium ${getLevelColor(selectedWord.level)}`}>
+                  Level {selectedWord.level}
+                </span>
+                {selectedWord.isApiTranslated && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                    🌐 Live Translation
+                  </span>
+                )}
+                {selectedWord.isApiFallback && (
+                  <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                    ⚠️ Basic Translation
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Context section removed as requested */}
+
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              {/* Pronunciation button */}
+              {ttsSupported && (
+                <button
+                  onClick={speakWord}
+                  className={`w-full py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center ${
+                    speakingWord 
+                      ? 'bg-red-500 hover:bg-red-600 text-white' 
+                      : 'bg-purple-500 hover:bg-purple-600 text-white'
+                  }`}
+                >
+                  {speakingWord ? (
+                    <>
+                      <VolumeX className="w-4 h-4 mr-2" />
+                      Stop
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="w-4 h-4 mr-2" />
+                      Listen to Pronunciation
+                    </>
+                  )}
+                </button>
+              )}
+              
+              <button
+                onClick={handleMastered}
+                className="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+              >
+                Mastered! ✨
+              </button>
+              <button
+                onClick={handleAddToDictionary}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
+              >
+                <BookOpen className="w-4 h-4 mr-2" />
+                Add to My Dictionary
+              </button>
+            </div>
+
+            {/* Feedback Message */}
+            {feedbackMessage && (
+              <div className="mt-4 p-3 bg-green-100 text-green-800 rounded-lg text-center">
+                <span className="text-lg mr-2">{feedbackMessage.icon}</span>
+                {feedbackMessage.message}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default EnhancedCommentSystem;
