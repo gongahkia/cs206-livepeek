@@ -25,6 +25,8 @@ class RedditService {
     this.nounTranslationCache = new Map();
     // Probability to translate each noun token when translation is enabled for the page
     this.perTokenTranslateProbability = 0.6;
+    // Use serverless proxy in production to avoid CORS/adblock
+    this.proxyBasePath = '/api/reddit';
   }
 
   // Get time ago string from timestamp
@@ -243,6 +245,17 @@ class RedditService {
     return result;
   }
 
+  // Decide whether to use proxy (non-localhost browser)
+  shouldUseProxy() {
+    try {
+      if (typeof window === 'undefined') return false;
+      const host = window.location.hostname || '';
+      return host !== 'localhost' && host !== '127.0.0.1';
+    } catch (_) {
+      return false;
+    }
+  }
+
   // Fetch posts from a specific subreddit
   async fetchSubredditPosts(subreddit, limit = 10, sort = 'hot') {
     const cacheKey = `${subreddit}_${sort}_${limit}`;
@@ -253,15 +266,22 @@ class RedditService {
     }
 
     try {
-      // Attempt across multiple base URLs
+      // Build candidate URLs: proxy first in production, then direct hosts
+      const candidateUrls = [];
+      if (this.shouldUseProxy()) {
+        candidateUrls.push(`${this.proxyBasePath}?path=/r/${subreddit}/${sort}.json&limit=${limit}&raw_json=1`);
+      }
+      for (const base of this.baseUrls) {
+        candidateUrls.push(`${base}/r/${subreddit}/${sort}.json?limit=${limit}&raw_json=1`);
+      }
+
       let data = null;
       let lastError = null;
-      for (const base of this.baseUrls) {
+      for (const url of candidateUrls) {
         try {
-          const url = `${base}/r/${subreddit}/${sort}.json?limit=${limit}&raw_json=1`;
           const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
           if (!response.ok) {
-            lastError = new Error(`Reddit API error from ${base}: ${response.status}`);
+            lastError = new Error(`Reddit API error from ${url}: ${response.status}`);
             continue;
           }
           data = await response.json();
@@ -393,12 +413,18 @@ class RedditService {
     try {
       let data = null;
       let lastError = null;
+      const candidates = [];
+      if (this.shouldUseProxy()) {
+        candidates.push(`${this.proxyBasePath}?path=/api/info.json&id=t3_${postId}&raw_json=1`);
+      }
       for (const base of this.baseUrls) {
+        candidates.push(`${base}/api/info.json?id=t3_${postId}&raw_json=1`);
+      }
+      for (const url of candidates) {
         try {
-          const url = `${base}/api/info.json?id=t3_${postId}&raw_json=1`;
           const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
           if (!response.ok) {
-            lastError = new Error(`Reddit API error from ${base}: ${response.status}`);
+            lastError = new Error(`Reddit API error from ${url}: ${response.status}`);
             continue;
           }
           data = await response.json();
@@ -435,12 +461,18 @@ class RedditService {
       // Reddit permalink format: /r/subreddit/comments/post_id/title/
       let data = null;
       let lastError = null;
+      const candidates = [];
+      if (this.shouldUseProxy()) {
+        candidates.push(`${this.proxyBasePath}?path=${encodeURIComponent(permalink)}.json&limit=${limit}&raw_json=1`);
+      }
       for (const base of this.baseUrls) {
+        candidates.push(`${base}${permalink}.json?limit=${limit}&raw_json=1`);
+      }
+      for (const url of candidates) {
         try {
-          const url = `${base}${permalink}.json?limit=${limit}&raw_json=1`;
           const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
           if (!response.ok) {
-            lastError = new Error(`Reddit API error from ${base}: ${response.status}`);
+            lastError = new Error(`Reddit API error from ${url}: ${response.status}`);
             continue;
           }
           data = await response.json();
