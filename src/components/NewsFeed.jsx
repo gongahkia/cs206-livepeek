@@ -25,7 +25,75 @@ const NewsFeed = ({ selectedCountry, userProfile, onAddWordToDictionary, userDic
   // Lightbox for images
   const [lightboxUrl, setLightboxUrl] = useState(null);
 
-  // Removed hardcoded fallback posts; rely only on live Reddit data
+  // Hardcoded fallback posts (used if Reddit fetch fails or returns empty)
+  const fallbackPosts = [
+    {
+      id: 'fallback_1',
+      author: 'TokyoLocal',
+      authorEn: 'TokyoLocal',
+      verified: false,
+      location: 'Tokyo',
+      time: '2 hours ago',
+      title: '地元の人だけが知る hidden ラーメン店',
+      content: 'これらの family-run business の店は何世代にもわたって authentic ラーメンを提供してきました。',
+      image: null,
+      imageFull: null,
+      tags: ['#グルメ', '#culture'],
+      likes: 214,
+      comments: 37,
+      shares: 21,
+      source: 'social',
+      originalSource: 'LivePeek',
+      externalUrl: 'https://example.com',
+      difficulty: 6,
+      isRedditPost: false,
+      fullText: '地元の人だけが知る hidden ラーメン店。これらの family-run business の店は何世代にもわたって authentic ラーメンを提供してきました。'
+    },
+    {
+      id: 'fallback_2',
+      author: 'SakuraGuide',
+      authorEn: 'SakuraGuide',
+      verified: true,
+      location: 'Kyoto',
+      time: '1 day ago',
+      title: '桜の季節は日本で最も美しい時期です',
+      content: 'Sakura の季節は tourism に boost をもたらします。limited-time products で visitors を attract。',
+      image: null,
+      imageFull: null,
+      tags: ['#travel', '#culture'],
+      likes: 180,
+      comments: 22,
+      shares: 17,
+      source: 'social',
+      originalSource: 'LivePeek',
+      externalUrl: 'https://example.com',
+      difficulty: 5,
+      isRedditPost: false,
+      fullText: '桜の季節は日本で最も美しい時期です。tourism に boost。limited-time products で visitors を attract。'
+    },
+    {
+      id: 'fallback_3',
+      author: 'FashionStudent',
+      authorEn: 'FashionStudent',
+      verified: false,
+      location: 'Harajuku',
+      time: '3 days ago',
+      title: '若者の creativity と self-expression は fashion scene を変化させています',
+      content: 'Traditional elements と modern trends の融合。東京の最も busy な地区で地下の food culture を探索。',
+      image: null,
+      imageFull: null,
+      tags: ['#fashion', '#culture'],
+      likes: 95,
+      comments: 12,
+      shares: 9,
+      source: 'social',
+      originalSource: 'LivePeek',
+      externalUrl: 'https://example.com',
+      difficulty: 6,
+      isRedditPost: false,
+      fullText: '若者の creativity と self-expression は fashion scene を変化させています。Traditional と modern の融合。'
+    }
+  ];
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -150,10 +218,14 @@ const NewsFeed = ({ selectedCountry, userProfile, onAddWordToDictionary, userDic
       try {
         setLoadingReddit(true);
         const posts = await redditService.fetchJapanesePosts(limitPerSubreddit, maxTotalPosts);
-        setRedditPosts(posts || []);
+        if (posts && posts.length > 0) {
+          setRedditPosts(posts);
+        } else {
+          setRedditPosts(fallbackPosts);
+        }
       } catch (error) {
         console.error('Error fetching Reddit posts:', error);
-        setRedditPosts([]);
+        setRedditPosts(fallbackPosts);
       } finally {
         setLoadingReddit(false);
       }
